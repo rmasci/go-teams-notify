@@ -72,6 +72,12 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // https://connectplayground.azurewebsites.net/
 // https://github.com/atc0005/bounce/issues/21
 type MessageCard struct {
+	// Required; must be set to "MessageCard"
+	Type string `json:"@type"`
+	// Required; must be set to "https://schema.org/extensions"
+	Context string `json:"@context"`
+
+	// Summary appears to only be used when there are sections defined
 	Summary    string `json:"summary,omitempty"`
 	Title      string `json:"title"`
 	Text       string `json:"text"`
@@ -97,7 +103,16 @@ type MessageCard struct {
 
 // NewMessageCard - create new empty message card
 func NewMessageCard() MessageCard {
-	return MessageCard{}
+
+	// define expected values to meet Office 365 Connector card requirements
+	// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#card-fields
+	// TODO: Move string values to constants list
+	msgCard := MessageCard{
+		Type: "MessageCard",
+		Context "https://schema.org/extensions",
+	}
+
+	return msgCard
 }
 
 // helper --------------------------------------------------------------------------------------------------------------
