@@ -66,6 +66,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
 // https://mholt.github.io/json-to-go/
 // https://messagecardplayground.azurewebsites.net/
+// https://connectplayground.azurewebsites.net/
 // https://github.com/atc0005/bounce/issues/21
 type MessageCard struct {
 	Summary    string `json:"summary,omitempty"`
