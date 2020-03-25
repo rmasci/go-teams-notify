@@ -62,10 +62,32 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 }
 
 // MessageCard - struct of message card
+// https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
+// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
+// https://github.com/atc0005/bounce/issues/21
 type MessageCard struct {
+	Summary    string `json:"summary,omitempty"`
 	Title      string `json:"title"`
 	Text       string `json:"text"`
 	ThemeColor string `json:"themeColor,omitempty"`
+	Sections   []struct {
+		Title    string `json:"title"`
+		Text     string `json:"text"`
+		Markdown bool   `json:"markdown"`
+		Facts    []struct {
+			Name  string `json:"name"`
+			Value string `json:"value"`
+		} `json:"facts,omitempty"`
+	} `json:"sections,omitempty"`
+	PotentialAction []struct {
+		Target          []string    `json:"target"`
+		Context         string      `json:"@context"`
+		Type            string      `json:"@type"`
+		ID              interface{} `json:"@id"`
+		Name            string      `json:"name"`
+		IsPrimaryAction bool        `json:"isPrimaryAction"`
+	} `json:"potentialAction,omitempty"`
+	ThreadingCriteria interface{} `json:"threadingCriteria,omitempty"`
 }
 
 // NewMessageCard - create new empty message card
