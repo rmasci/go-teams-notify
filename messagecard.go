@@ -152,6 +152,8 @@ type MessageCard struct {
 // message.
 func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 	for _, s := range section {
+		logger.Printf("AddSection: MessageCardSection received: %+v\n", s)
+
 		// bail if a completely nil section provided
 		if s == nil {
 			return fmt.Errorf("func AddSection: nil MessageCardSection received")
@@ -181,9 +183,11 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		case s.Title != "":
 
 		default:
+			logger.Println("AddSection: No cases matched, all fields assumed to be at zero-value, skipping section")
 			return fmt.Errorf("all fields found to be at zero-value, skipping section")
 		}
 
+		logger.Println("AddSection: section contains at least one non-zero value, adding section")
 		mc.Sections = append(mc.Sections, s)
 	}
 
@@ -194,6 +198,8 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 	for _, f := range fact {
+		logger.Printf("AddFact: MessageCardSectionFact received: %+v\n", f)
+
 		if f.Name == "" {
 			return fmt.Errorf("empty Name field received for new fact: %+v", f)
 		}
@@ -203,6 +209,7 @@ func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 		}
 	}
 
+	logger.Println("AddFact: section fact contains at least one non-zero value, adding section fact")
 	mcs.Facts = append(mcs.Facts, fact...)
 
 	return nil
