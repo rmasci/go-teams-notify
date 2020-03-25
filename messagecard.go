@@ -38,6 +38,31 @@ type MessageCardSectionImage struct {
 	Title string `json:"title"`
 }
 
+// MessageCardPotentialAction represents an action that a user may take for a
+// received Microsoft Teams message. Actions may be defined for the card
+// as a whole and/or in specifc sections.
+// FIXME: Add doc comments to each field.
+// type MessageCardPotentialAction struct {
+// 	Target  []string `json:"target"`
+// 	Context string   `json:"@context"`
+// 	Type    string   `json:"@type"`
+
+// 	// FIXME: The original conversion had `interface{}` as the type here. The
+// 	// example JSON payload I found had `null` (no quotes) as the value for
+// 	// this field. We may need to change this back to `interface{}` for
+// 	// compatibility reasons.
+// 	// https://stackoverflow.com/questions/31048557/assigning-null-to-json-fields-instead-of-empty-strings
+// 	ID              string `json:"@id"`
+// 	Name            string `json:"name"`
+// 	IsPrimaryAction bool   `json:"isPrimaryAction"`
+// }
+
+// https://golang.org/pkg/encoding/json/
+//
+// The "omitempty" option specifies that the field should be omitted from the
+// encoding if the field has an empty value, defined as false, 0, a nil
+// pointer, a nil interface value, and any empty array, slice, map, or string.
+
 // MessageCardSection represents a section to include in a message card.
 type MessageCardSection struct {
 
@@ -101,6 +126,10 @@ type MessageCardSection struct {
 	// usually is displayed in a two-column key/value format.
 	Facts []MessageCardSectionFact `json:"facts,omitempty"`
 
+	// PotentialAction is a collection of actions that can be invoked on this
+	// section.
+	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
+
 	// Images is a property that allows for the inclusion of a photo gallery
 	// inside a section.
 	// We use a slice of pointers to this type in order to have the json
@@ -145,6 +174,9 @@ type MessageCard struct {
 
 	// Sections is a collection of sections to include in the card.
 	Sections []*MessageCardSection `json:"sections,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this card.
+	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
 // AddSection adds one or many additional MessageCardSection values to a
@@ -243,6 +275,19 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 	return nil
 }
 
+// AddAction adds one or many additional MessageCardPotentialAction values to
+// a MessageCard section.
+// func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardPotentialAction) {
+
+// 	//logger.Printf("AddAction: Existing section actions: %+v\n", mcs.PotentialAction)
+// 	//logger.Printf("AddAction: Incoming section actions: %+v\n", sectionAction)
+
+// 	// FIXME: No more than four actions are currently supported according to the reference doc.
+// 	mcs.PotentialAction = append(mcs.PotentialAction, sectionAction...)
+
+// 	//logger.Printf("AddAction: Section actions after append() call: %+v\n", mcs.PotentialAction)
+// }
+
 // AddImage adds an image to a MessageCard section. These images are used to
 // provide a photo gallery inside a MessageCard section.
 func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) error {
@@ -337,3 +382,31 @@ func NewMessageCardSectionImage() MessageCardSectionImage {
 	msgCardSectionImage := MessageCardSectionImage{}
 	return msgCardSectionImage
 }
+
+// NewMessageCardPotentialAction creates an empty potential action value. This
+// value may be added or attached to the main message card value OR to a
+// specific message card section.
+// func NewMessageCardPotentialAction() MessageCardPotentialAction {
+
+// 	// Example potentialAction portion of MS Teams JSON payload:
+// 	//
+// 	// "potentialAction": [
+// 	// 	{
+// 	// 		"target": [
+// 	// 			"http://web.example.local:8000/app/search/@go?sid=scheduler_admin_search_W2_at_14232356_132"
+// 	// 		],
+// 	// 		"@context": "http://schema.org",
+// 	// 		"@type": "ViewAction",
+// 	// 		"@id": null,
+// 	// 		"name": "View full Splunk report",
+// 	// 		"isPrimaryAction": true
+// 	// 	}
+// 	// ]
+
+// 	msgCardPotentialAction := MessageCardPotentialAction{}
+
+// 	// prefill required fields
+// 	msgCardPotentialAction.Context = "http://schema.org"
+
+// 	return msgCardPotentialAction
+// }
