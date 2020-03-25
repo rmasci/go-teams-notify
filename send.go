@@ -108,8 +108,8 @@ func NewMessageCard() MessageCard {
 	// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#card-fields
 	// TODO: Move string values to constants list
 	msgCard := MessageCard{
-		Type: "MessageCard",
-		Context "https://schema.org/extensions",
+		Type:    "MessageCard",
+		Context: "https://schema.org/extensions",
 	}
 
 	return msgCard
