@@ -64,6 +64,8 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // MessageCard - struct of message card
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
+// https://mholt.github.io/json-to-go/
+// https://messagecardplayground.azurewebsites.net/
 // https://github.com/atc0005/bounce/issues/21
 type MessageCard struct {
 	Summary    string `json:"summary,omitempty"`
@@ -87,7 +89,6 @@ type MessageCard struct {
 		Name            string      `json:"name"`
 		IsPrimaryAction bool        `json:"isPrimaryAction"`
 	} `json:"potentialAction,omitempty"`
-	ThreadingCriteria interface{} `json:"threadingCriteria,omitempty"`
 }
 
 // NewMessageCard - create new empty message card
