@@ -43,7 +43,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	webhookMessageByte, _ := json.Marshal(webhookMessage)
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
-	fmt.Printf("%#v", webhookMessageByte)
+	fmt.Printf("%+v", string(webhookMessageByte))
 
 	// prepare request (error not possible)
 	req, _ := http.NewRequest("POST", webhookURL, webhookMessageBuffer)
