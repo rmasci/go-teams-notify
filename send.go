@@ -67,6 +67,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // MessageCard - struct of message card
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
+// https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using
 // https://mholt.github.io/json-to-go/
 // https://messagecardplayground.azurewebsites.net/
 // https://connectplayground.azurewebsites.net/
