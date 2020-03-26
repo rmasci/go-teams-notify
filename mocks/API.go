@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	goteamsnotify "github.com/dasrick/go-teams-notify"
+	goteamsnotify "github.com/atc0005/go-teams-notify"
 	mock "github.com/stretchr/testify/mock"
 )
 
