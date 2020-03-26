@@ -64,30 +64,65 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	return nil
 }
 
-// MessageCardSectionFact represents a section fact entry usually displayed in
-// a two-column key/value format.
+// MessageCardSectionFact represents a section fact entry that is usually
+// displayed in a two-column key/value format.
 type MessageCardSectionFact struct {
-	Name  string `json:"name"`
+
+	// Name is the key for an associated value in a key/value pair
+	Name string `json:"name"`
+
+	// Value is the value for an associated key in a key/value pair
 	Value string `json:"value"`
 }
 
 // MessageCardPotentialAction represents an action that a user may take for a
 // received Microsoft Teams message.
-type MessageCardPotentialAction struct {
-	Target          []string    `json:"target"`
-	Context         string      `json:"@context"`
-	Type            string      `json:"@type"`
-	ID              interface{} `json:"@id"`
-	Name            string      `json:"name"`
-	IsPrimaryAction bool        `json:"isPrimaryAction"`
-}
+//
+// NOTE: Disabled for now due to potential complexity of implementation
+//
+// type MessageCardPotentialAction struct {
+// 	Target          []string `json:"target"`
+// 	Context         string   `json:"@context"`
+// 	Type            string   `json:"@type"`
+// 	ID              string   `json:"@id"`
+// 	Name            string   `json:"name"`
+// 	IsPrimaryAction bool     `json:"isPrimaryAction"`
+// }
+
+// https://golang.org/pkg/encoding/json/
+//
+// The "omitempty" option specifies that the field should be omitted from the
+// encoding if the field has an empty value, defined as false, 0, a nil
+// pointer, a nil interface value, and any empty array, slice, map, or string.
 
 // MessageCardSection represents a section to include in a message card.
 type MessageCardSection struct {
-	Title    string                   `json:"title"`
-	Text     string                   `json:"text"`
-	Markdown bool                     `json:"markdown"`
-	Facts    []MessageCardSectionFact `json:"facts,omitempty"`
+
+	// Title is the title property of a section. This property  is displayed
+	// in a font that stands out, while not as prominent as the card's title.
+	// It is meant to introduce the section and summarize its content,
+	// similarly to how the card's title property is meant to summarize the
+	// whole card.
+	Title string `json:"title,omitempty"`
+
+	// Text is the section's text property. This property is very similar to
+	// the text property of the card. It can be used for the same purpose.
+	Text string `json:"text,omitempty"`
+
+	// Markdown represents a toggle to enable or disable Markdown formatting.
+	// By default, all text fields in a card and its sections can be formatted
+	// using basic Markdown.
+	Markdown bool `json:"markdown,omitempty"`
+
+	// Facts is a collection of MessageCardSectionFact values. A section entry
+	// usually is displayed in a two-column key/value format.
+	Facts []MessageCardSectionFact `json:"facts,omitempty"`
+
+	// StartGroup is the section's startGroup property. This property marks
+	// the start of a logical group of information. Typically, sections with
+	// startGroup set to true will be visually separated from previous card
+	// elements.
+	StartGroup bool `json:"startGroup,omitempty"`
 }
 
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
@@ -117,7 +152,7 @@ type MessageCard struct {
 	// prominent way, at the very top of the card. Use it to introduce the
 	// content of the card in such a way users will immediately know what to
 	// expect.
-	Title string `json:"title"`
+	Title string `json:"title,omitempty"`
 
 	// Text is required if the card does not contain a summary property,
 	// otherwise optional. The text property is meant to be displayed in a
@@ -134,7 +169,10 @@ type MessageCard struct {
 	Sections []MessageCardSection `json:"sections,omitempty"`
 
 	// PotentialAction is a collection of actions that can be invoked on this card.
-	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
+	//
+	// NOTE: Disabled for now due to potential complexity of implementation
+	//
+	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
 // NewMessageCard - create new empty message card

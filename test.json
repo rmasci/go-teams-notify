@@ -28,12 +28,12 @@
   "entities": null,
   "potentialAction": [
     {
+      "@type": "ViewAction",
+      "@id": null,
       "target": [
         "http://web.example.local:8000/app/search/@go?sid=scheduler_admin_search_W2_at_14232356_132"
       ],
       "@context": "http://schema.org",
-      "@type": "ViewAction",
-      "@id": null,
       "name": "View full Splunk report",
       "isPrimaryAction": false
     }
