@@ -64,7 +64,32 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	return nil
 }
 
-// MessageCard - struct of message card
+// MessageCardSectionFact represents a section fact entry usually displayed in
+// a two-column key/value format.
+type MessageCardSectionFact struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// MessageCardPotentialAction represents an action that a user may take for a
+// received Microsoft Teams message.
+type MessageCardPotentialAction struct {
+	Target          []string    `json:"target"`
+	Context         string      `json:"@context"`
+	Type            string      `json:"@type"`
+	ID              interface{} `json:"@id"`
+	Name            string      `json:"name"`
+	IsPrimaryAction bool        `json:"isPrimaryAction"`
+}
+
+// MessageCardSection represents a section to include in a message card.
+type MessageCardSection struct {
+	Title    string                   `json:"title"`
+	Text     string                   `json:"text"`
+	Markdown bool                     `json:"markdown"`
+	Facts    []MessageCardSectionFact `json:"facts,omitempty"`
+}
+
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
 // https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using
@@ -72,34 +97,44 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // https://messagecardplayground.azurewebsites.net/
 // https://connectplayground.azurewebsites.net/
 // https://github.com/atc0005/bounce/issues/21
+
+// MessageCard represents a legacy actionable message card used via Office 365
+// or Microsoft Teams connectors.
 type MessageCard struct {
 	// Required; must be set to "MessageCard"
 	Type string `json:"@type"`
+
 	// Required; must be set to "https://schema.org/extensions"
 	Context string `json:"@context"`
 
-	// Summary appears to only be used when there are sections defined
-	Summary    string `json:"summary,omitempty"`
-	Title      string `json:"title"`
-	Text       string `json:"text"`
+	// Summary is required if the card does not contain a text property,
+	// otherwise optional. The summary property is typically displayed in the
+	// list view in Outlook, as a way to quickly determine what the card is
+	// all about. Summary appears to only be used when there are sections defined
+	Summary string `json:"summary,omitempty"`
+
+	// Title is the title property of a card. is meant to be rendered in a
+	// prominent way, at the very top of the card. Use it to introduce the
+	// content of the card in such a way users will immediately know what to
+	// expect.
+	Title string `json:"title"`
+
+	// Text is required if the card does not contain a summary property,
+	// otherwise optional. The text property is meant to be displayed in a
+	// normal font below the card's title. Use it to display content, such as
+	// the description of the entity being referenced, or an abstract of a
+	// news article.
+	Text string `json:"text"`
+
+	// Specifies a custom brand color for the card. The color will be
+	// displayed in a non-obtrusive manner.
 	ThemeColor string `json:"themeColor,omitempty"`
-	Sections   []struct {
-		Title    string `json:"title"`
-		Text     string `json:"text"`
-		Markdown bool   `json:"markdown"`
-		Facts    []struct {
-			Name  string `json:"name"`
-			Value string `json:"value"`
-		} `json:"facts,omitempty"`
-	} `json:"sections,omitempty"`
-	PotentialAction []struct {
-		Target          []string    `json:"target"`
-		Context         string      `json:"@context"`
-		Type            string      `json:"@type"`
-		ID              interface{} `json:"@id"`
-		Name            string      `json:"name"`
-		IsPrimaryAction bool        `json:"isPrimaryAction"`
-	} `json:"potentialAction,omitempty"`
+
+	// Sections is a collection of sections to include in the card.
+	Sections []MessageCardSection `json:"sections,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this card.
+	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
 // NewMessageCard - create new empty message card
