@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 )
 
 const (
@@ -26,6 +27,31 @@ func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
 	mcs.Facts = append(mcs.Facts, fact...)
+}
+
+// AddFactFromKeyValue accepts a key and slice of values and converts them to
+// MessageCardSectionFact values
+func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string) error {
+
+	// validate arguments
+
+	if key == "" {
+		return errors.New("empty key received for new fact")
+	}
+
+	if len(values) < 1 {
+		return errors.New("no values received for new fact")
+	}
+
+	fact := MessageCardSectionFact{
+		Name:  key,
+		Value: strings.Join(values, ", "),
+	}
+
+	mcs.Facts = append(mcs.Facts, fact)
+
+	// if we made it this far then all should be well
+	return nil
 }
 
 // FormatAsCodeBlock accepts an arbitrary string, quoted or not, and calls a

@@ -175,7 +175,8 @@ type MessageCard struct {
 	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
-// NewMessageCard - create new empty message card
+// NewMessageCard creates a new message card with required fields required by
+// the legacy message card format already predefined
 func NewMessageCard() MessageCard {
 
 	// define expected values to meet Office 365 Connector card requirements
@@ -187,6 +188,13 @@ func NewMessageCard() MessageCard {
 	}
 
 	return msgCard
+}
+
+// NewMessageCardSection creates an empty message card section
+func NewMessageCardSection() MessageCardSection {
+
+	return MessageCardSection{}
+
 }
 
 // helper --------------------------------------------------------------------------------------------------------------
