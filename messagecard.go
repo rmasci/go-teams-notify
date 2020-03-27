@@ -16,14 +16,16 @@ const (
 	msTeamsCodeSnippetSubmissionSuffix string = "`\""
 )
 
-// AddSection adds an additional MessageCardSection to a MessageCard.
-func (mc *MessageCard) AddSection(section MessageCardSection) {
-	mc.Sections = append(mc.Sections, section)
+// AddSection adds one or many additional MessageCardSection values to a
+// MessageCard.
+func (mc *MessageCard) AddSection(section ...MessageCardSection) {
+	mc.Sections = append(mc.Sections, section...)
 }
 
-// AddFact adds an additional MessageCardSectionFact to a MessageCardSection
-func (mcs *MessageCardSection) AddFact(fact MessageCardSectionFact) {
-	mcs.Facts = append(mcs.Facts, fact)
+// AddFact adds one or many additional MessageCardSectionFact values to a
+// MessageCardSection
+func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
+	mcs.Facts = append(mcs.Facts, fact...)
 }
 
 // FormatAsCodeBlock accepts an arbitrary string, quoted or not, and calls a
