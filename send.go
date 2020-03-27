@@ -55,9 +55,22 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 		log.Println(err)
 		return err
 	}
-	if res.StatusCode >= 299 {
+	switch {
+	case res.StatusCode == http.StatusBadRequest:
+
+		// Response string is likely:
+		// Summary or Text is required.
+
+		// return errors.New("error on notification: " + res.Status)
+		return fmt.Errorf(
+			"error on notification; res.Status: %v, http.StatusText(): %v",
+			res.Status,
+			http.StatusText(res.StatusCode),
+		)
+
+	case res.StatusCode >= 299:
 		err = errors.New("error on notification: " + res.Status)
-		log.Println(err)
+		//log.Println(err)
 		return err
 	}
 
