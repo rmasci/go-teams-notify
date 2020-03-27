@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -55,24 +56,33 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 		log.Println(err)
 		return err
 	}
-	switch {
-	case res.StatusCode == http.StatusBadRequest:
 
-		// Response string is likely:
-		// Summary or Text is required.
+	// Make sure that we close the response body once we're done with it
+	defer res.Body.Close()
 
-		// return errors.New("error on notification: " + res.Status)
-		return fmt.Errorf(
-			"error on notification; res.Status: %v, http.StatusText(): %v",
-			res.Status,
-			http.StatusText(res.StatusCode),
-		)
+	// Get the response text for use with extended error messages
+	responseData, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 
-	case res.StatusCode >= 299:
-		err = errors.New("error on notification: " + res.Status)
+	responseString := string(responseData)
+
+	if res.StatusCode >= 299 {
+
+		// 400 Bad Response is likely an indicator that we failed to provide a
+		// required field in our JSON payload, such as "Summary or Text is
+		// required." when failing to supply such a field in the top level of
+		// the MessageCard value that we send to the webhook URL.
+
+		err = fmt.Errorf("error on notification: %v, %q", res.Status, responseString)
 		//log.Println(err)
 		return err
 	}
+
+	// log the response string
+	log.Printf("DEBUG: Response string: %v\n", responseString)
 
 	return nil
 }
