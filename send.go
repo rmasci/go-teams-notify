@@ -60,13 +60,13 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	// Make sure that we close the response body once we're done with it
 	defer res.Body.Close()
 
-	// Get the response text for use with extended error messages
+	// Get the response body, then convert to string for use with extended
+	// error messages
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
-
 	responseString := string(responseData)
 
 	if res.StatusCode >= 299 {
