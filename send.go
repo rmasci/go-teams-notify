@@ -34,12 +34,17 @@ func NewClient() (API, error) {
 
 // Send - will post a notification to MS Teams incomingWebhookURL
 func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
+
 	// validate url
-	// needs to look like: https://outlook.office.com/webhook/xxx
-	valid, err := isValidWebhookURL(webhookURL)
-	if !valid {
+	if valid, err := IsValidWebhookURL(webhookURL); !valid {
 		return err
 	}
+
+	// validate message
+	if valid, err := IsValidMessageCard(webhookMessage); !valid {
+		return err
+	}
+
 	// prepare message
 	webhookMessageByte, _ := json.Marshal(webhookMessage)
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
@@ -182,7 +187,7 @@ type MessageCard struct {
 	// normal font below the card's title. Use it to display content, such as
 	// the description of the entity being referenced, or an abstract of a
 	// news article.
-	Text string `json:"text"`
+	Text string `json:"text,omitempty"`
 
 	// Specifies a custom brand color for the card. The color will be
 	// displayed in a non-obtrusive manner.
@@ -222,7 +227,9 @@ func NewMessageCardSection() MessageCardSection {
 
 // helper --------------------------------------------------------------------------------------------------------------
 
-func isValidWebhookURL(webhookURL string) (bool, error) {
+// IsValidWebhookURL performs validation checks on the webhook URL used to
+// submit messages to Microsoft Teams.
+func IsValidWebhookURL(webhookURL string) (bool, error) {
 	// basic URL check
 	_, err := url.Parse(webhookURL)
 	if err != nil {
@@ -237,4 +244,19 @@ func isValidWebhookURL(webhookURL string) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+// IsValidMessageCard performs validation/checks for known issues with
+// MessardCard values.
+func IsValidMessageCard(webhookMessage MessageCard) (bool, error) {
+
+	if (webhookMessage.Text == "") && (webhookMessage.Summary == "") {
+		// This scenario results in:
+		// 400 Bad Request
+		// Summary or Text is required.
+		return false, fmt.Errorf("invalid message card: summary or text field is required")
+	}
+
+	return true, nil
+
 }
