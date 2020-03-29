@@ -9,9 +9,15 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
+
+// Logger is a  package logger that can be manipulated by client code to
+// enable logging output from this package when desired/needed for
+// troubleshooting
+var Logger = log.New(os.Stderr, "goteamsnotify", log.Ldate|log.Ltime|log.Lshortfile)
 
 // API - interface of MS Teams notify
 type API interface {
@@ -20,6 +26,14 @@ type API interface {
 
 type teamsClient struct {
 	httpClient *http.Client
+}
+
+func init() {
+
+	// Disable logging output by default unless client code requests it by
+	// setting the output to an io.Writer
+	Logger.SetOutput(ioutil.Discard)
+
 }
 
 // NewClient - create a brand new client for MS Teams notify
