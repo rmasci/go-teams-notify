@@ -254,9 +254,11 @@ func NewMessageCard() *MessageCard {
 }
 
 // NewMessageCardSection creates an empty message card section
-func NewMessageCardSection() MessageCardSection {
+func NewMessageCardSection() *MessageCardSection {
 
-	return MessageCardSection{}
+	msgCardSection := MessageCardSection{}
+
+	return &msgCardSection
 
 }
 
