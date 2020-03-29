@@ -30,7 +30,7 @@ type teamsClient struct {
 
 func init() {
 
-	Logger = log.New(os.Stderr, "goteamsnotify", log.Ldate|log.Ltime|log.Lshortfile)
+	Logger = log.New(os.Stderr, "[goteamsnotify] ", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Disable logging output by default unless client code requests it by
 	// setting the output to an io.Writer
