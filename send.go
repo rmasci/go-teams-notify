@@ -240,7 +240,7 @@ type MessageCard struct {
 
 // NewMessageCard creates a new message card with required fields required by
 // the legacy message card format already predefined
-func NewMessageCard() MessageCard {
+func NewMessageCard() *MessageCard {
 
 	// define expected values to meet Office 365 Connector card requirements
 	// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#card-fields
@@ -250,7 +250,7 @@ func NewMessageCard() MessageCard {
 		Context: "https://schema.org/extensions",
 	}
 
-	return msgCard
+	return &msgCard
 }
 
 // NewMessageCardSection creates an empty message card section
