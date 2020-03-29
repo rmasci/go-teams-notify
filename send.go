@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// logger is a package logger that can be manipulated by client code to enable
+// logger is a package logger that can be enabled from client code to allow
 // logging output from this package when desired/needed for troubleshooting
 var logger *log.Logger
 
@@ -30,7 +30,7 @@ type teamsClient struct {
 func init() {
 
 	// Disable logging output by default unless client code explicitly
-	// requests it by setting the output to an io.Writer
+	// requests it
 	logger = log.New(os.Stderr, "[goteamsnotify] ", 0)
 	logger.SetOutput(ioutil.Discard)
 
