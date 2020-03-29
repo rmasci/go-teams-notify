@@ -19,13 +19,22 @@ const (
 // AddSection adds one or many additional MessageCardSection values to a
 // MessageCard.
 func (mc *MessageCard) AddSection(section ...MessageCardSection) {
+
+	logger.Printf("Existing sections: %+v\n", mc.Sections)
+	logger.Printf("Incoming sections: %+v\n", section)
 	mc.Sections = append(mc.Sections, section...)
+	logger.Printf("Sections after append() call: %+v\n", mc.Sections)
 }
 
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
+
+	logger.Printf("Existing sections: %+v\n", mcs.Facts)
+	logger.Printf("Incoming sections: %+v\n", fact)
 	mcs.Facts = append(mcs.Facts, fact...)
+	logger.Printf("Facts after append() call: %+v\n", mcs.Facts)
+
 }
 
 // AddFactFromKeyValue accepts a key and slice of values and converts them to
