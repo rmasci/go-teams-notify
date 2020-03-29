@@ -14,11 +14,6 @@ import (
 	"time"
 )
 
-// Logger is a  package logger that can be manipulated by client code to
-// enable logging output from this package when desired/needed for
-// troubleshooting
-var Logger = log.New(os.Stderr, "goteamsnotify", log.Ldate|log.Ltime|log.Lshortfile)
-
 // API - interface of MS Teams notify
 type API interface {
 	Send(webhookURL string, webhookMessage MessageCard) error
@@ -29,6 +24,11 @@ type teamsClient struct {
 }
 
 func init() {
+
+	// Logger is a  package logger that can be manipulated by client code to
+	// enable logging output from this package when desired/needed for
+	// troubleshooting
+	var Logger = log.New(os.Stderr, "goteamsnotify", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Disable logging output by default unless client code requests it by
 	// setting the output to an io.Writer
