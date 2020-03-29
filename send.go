@@ -72,13 +72,13 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
 	// Basic, unformatted JSON
-	//Logger.Printf("DEBUG: %+v\n", string(webhookMessageByte))
+	//logger.Printf("DEBUG: %+v\n", string(webhookMessageByte))
 
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, webhookMessageByte, "", "\t"); err != nil {
 		return err
 	}
-	Logger.Printf("DEBUG: %v\n", prettyJSON.String())
+	logger.Printf("DEBUG: %v\n", prettyJSON.String())
 
 	// prepare request (error not possible)
 	req, _ := http.NewRequest("POST", webhookURL, webhookMessageBuffer)
@@ -87,7 +87,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	// do the request
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		Logger.Println(err)
+		logger.Println(err)
 		return err
 	}
 
@@ -98,7 +98,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	// error messages
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		Logger.Println(err)
+		logger.Println(err)
 		return err
 	}
 	responseString := string(responseData)
@@ -111,12 +111,12 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 		// the MessageCard value that we send to the webhook URL.
 
 		err = fmt.Errorf("error on notification: %v, %q", res.Status, responseString)
-		Logger.Println(err)
+		logger.Println(err)
 		return err
 	}
 
 	// log the response string
-	Logger.Printf("DEBUG: Response string: %v\n", responseString)
+	logger.Printf("DEBUG: Response string: %v\n", responseString)
 
 	return nil
 }

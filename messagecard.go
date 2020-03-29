@@ -104,7 +104,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 		panic(err)
 	}
 
-	Logger.Println("byteSlice as string:", string(byteSlice))
+	logger.Println("byteSlice as string:", string(byteSlice))
 
 	var prettyJSON bytes.Buffer
 	err = json.Indent(&prettyJSON, []byte(input), "", "\t")
@@ -113,7 +113,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	}
 	formattedJSON := prettyJSON.String()
 
-	Logger.Println("Formatted JSON:", formattedJSON)
+	logger.Println("Formatted JSON:", formattedJSON)
 
 	var codeContentForSubmission string
 
@@ -127,12 +127,12 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 
 	// if only start character is not a double-quote
 	case string(formattedJSON[0]) != `"`:
-		Logger.Println("[WARN]: escapedFormattedJSON is missing leading double-quote")
+		logger.Println("[WARN]: escapedFormattedJSON is missing leading double-quote")
 		codeContentForSubmission = prefix + string(formattedJSON)
 
 	// if only end character is not a double-quote
 	case string(formattedJSON[len(formattedJSON)-1]) != `"`:
-		Logger.Println("[WARN]: escapedFormattedJSON is missing trailing double-quote")
+		logger.Println("[WARN]: escapedFormattedJSON is missing trailing double-quote")
 		codeContentForSubmission = codeContentForSubmission + suffix
 
 	default:
@@ -149,9 +149,9 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 		codeContentForSubmission = prefix + string(formattedJSON[1:len(formattedJSON)-1]) + suffix
 	}
 
-	Logger.Printf("... as-is:\n%s\n\n", string(formattedJSON))
-	Logger.Printf("... without leading and trailing double-quotes: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
-	Logger.Printf("codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
+	logger.Printf("... as-is:\n%s\n\n", string(formattedJSON))
+	logger.Printf("... without leading and trailing double-quotes: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
+	logger.Printf("codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
 
 	// err should be nil if everything worked as expected
 	return codeContentForSubmission, err
