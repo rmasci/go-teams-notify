@@ -14,10 +14,9 @@ import (
 	"time"
 )
 
-// Logger is a  package logger that can be manipulated by client code to
-// enable logging output from this package when desired/needed for
-// troubleshooting
-var Logger *log.Logger
+// logger is a package logger that can be manipulated by client code to enable
+// logging output from this package when desired/needed for troubleshooting
+var logger *log.Logger
 
 // API - interface of MS Teams notify
 type API interface {
@@ -30,12 +29,19 @@ type teamsClient struct {
 
 func init() {
 
-	Logger = log.New(os.Stderr, "[goteamsnotify] ", log.Ldate|log.Ltime|log.Lshortfile)
+	logger = log.New(os.Stderr, "[goteamsnotify] ", log.Ldate|log.Ltime|log.Lshortfile)
 
-	// Disable logging output by default unless client code requests it by
-	// setting the output to an io.Writer
-	Logger.SetOutput(ioutil.Discard)
+	// Disable logging output by default unless client code explicitly
+	// requests it by setting the output to an io.Writer
+	logger.SetOutput(ioutil.Discard)
+	logger.SetFlags(0)
 
+}
+
+// EnableLogging enables logging output from this package. Output is muted by
+// default unless explicitly requested (by calling this function).
+func EnableLogging() {
+	logger.SetOutput(os.Stderr)
 }
 
 // NewClient - create a brand new client for MS Teams notify
