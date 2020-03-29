@@ -29,18 +29,17 @@ type teamsClient struct {
 
 func init() {
 
-	logger = log.New(os.Stderr, "[goteamsnotify] ", log.Ldate|log.Ltime|log.Lshortfile)
-
 	// Disable logging output by default unless client code explicitly
 	// requests it by setting the output to an io.Writer
+	logger = log.New(os.Stderr, "[goteamsnotify] ", 0)
 	logger.SetOutput(ioutil.Discard)
-	logger.SetFlags(0)
 
 }
 
 // EnableLogging enables logging output from this package. Output is muted by
 // default unless explicitly requested (by calling this function).
 func EnableLogging() {
+	logger.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	logger.SetOutput(os.Stderr)
 }
 
