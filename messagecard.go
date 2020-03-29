@@ -101,7 +101,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 
 	byteSlice, err := json.Marshal(input)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	logger.Println("byteSlice as string:", string(byteSlice))
