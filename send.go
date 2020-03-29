@@ -43,6 +43,13 @@ func EnableLogging() {
 	logger.SetOutput(os.Stderr)
 }
 
+// DisableLogging reapplies default package-level logging settings of muting
+// all logging output.
+func DisableLogging() {
+	logger.SetFlags(0)
+	logger.SetOutput(ioutil.Discard)
+}
+
 // NewClient - create a brand new client for MS Teams notify
 func NewClient() (API, error) {
 	client := teamsClient{
