@@ -79,7 +79,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	// do the request
 	res, err := c.httpClient.Do(req)
 	if err != nil {
-		log.Println(err)
+		Logger.Println(err)
 		return err
 	}
 
@@ -90,7 +90,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	// error messages
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err)
+		Logger.Println(err)
 		return err
 	}
 	responseString := string(responseData)
@@ -103,12 +103,12 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 		// the MessageCard value that we send to the webhook URL.
 
 		err = fmt.Errorf("error on notification: %v, %q", res.Status, responseString)
-		//log.Println(err)
+		Logger.Println(err)
 		return err
 	}
 
 	// log the response string
-	log.Printf("DEBUG: Response string: %v\n", responseString)
+	Logger.Printf("DEBUG: Response string: %v\n", responseString)
 
 	return nil
 }
