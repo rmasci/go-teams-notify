@@ -141,14 +141,22 @@ type MessageCardSectionFact struct {
 }
 
 // MessageCardPotentialAction represents an action that a user may take for a
-// received Microsoft Teams message.
+// received Microsoft Teams message. Actions may be defined for the card
+// as a whole and/or in specifc sections.
+// FIXME: Add doc comments to each field.
 type MessageCardPotentialAction struct {
-	Target          []string `json:"target"`
-	Context         string   `json:"@context"`
-	Type            string   `json:"@type"`
-	ID              string   `json:"@id"`
-	Name            string   `json:"name"`
-	IsPrimaryAction bool     `json:"isPrimaryAction"`
+	Target  []string `json:"target"`
+	Context string   `json:"@context"`
+	Type    string   `json:"@type"`
+
+	// FIXME: The original conversion had `interface{}` as the type here. The
+	// example JSON payload I found had `null` (no quotes) as the value for
+	// this field. We may need to change this back to `interface{}` for
+	// compatibility reasons.
+	// https://stackoverflow.com/questions/31048557/assigning-null-to-json-fields-instead-of-empty-strings
+	ID              string `json:"@id"`
+	Name            string `json:"name"`
+	IsPrimaryAction bool   `json:"isPrimaryAction"`
 }
 
 // https://golang.org/pkg/encoding/json/
@@ -179,6 +187,10 @@ type MessageCardSection struct {
 	// Facts is a collection of MessageCardSectionFact values. A section entry
 	// usually is displayed in a two-column key/value format.
 	Facts []MessageCardSectionFact `json:"facts,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this
+	// section.
+	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 
 	// StartGroup is the section's startGroup property. This property marks
 	// the start of a logical group of information. Typically, sections with
@@ -256,6 +268,34 @@ func NewMessageCardSection() MessageCardSection {
 
 	return msgCardSection
 
+}
+
+// NewMessageCardPotentialAction creates an empty potential action value. This
+// value may be added or attached to the main message card value OR to a
+// specific message card section.
+func NewMessageCardPotentialAction() MessageCardPotentialAction {
+
+	// Example potentialAction portion of MS Teams JSON payload:
+	//
+	// "potentialAction": [
+	// 	{
+	// 		"target": [
+	// 			"http://web.example.local:8000/app/search/@go?sid=scheduler_admin_search_W2_at_14232356_132"
+	// 		],
+	// 		"@context": "http://schema.org",
+	// 		"@type": "ViewAction",
+	// 		"@id": null,
+	// 		"name": "View full Splunk report",
+	// 		"isPrimaryAction": true
+	// 	}
+	// ]
+
+	msgCardPotentialAction := MessageCardPotentialAction{}
+
+	// prefill required fields
+	msgCardPotentialAction.Context = "http://schema.org"
+
+	return msgCardPotentialAction
 }
 
 // helper --------------------------------------------------------------------------------------------------------------

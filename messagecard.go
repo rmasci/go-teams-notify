@@ -16,13 +16,17 @@ func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 }
 
 // AddAction adds one or many additional MessageCardPotentialAction values to
-// a MessageCard.
+// a MessageCard. It is also possible to add MessageCardPotentialAction values
+// to specific sections as well.
 func (mc *MessageCard) AddAction(action ...MessageCardPotentialAction) {
 
-	//logger.Printf("DEBUG: Existing actions: %+v\n", mc.PotentialAction)
-	//logger.Printf("DEBUG: Incoming actions: %+v\n", action)
+	//logger.Printf("DEBUG: Existing main card actions: %+v\n", mc.PotentialAction)
+	//logger.Printf("DEBUG: Incoming main card actions: %+v\n", action)
+
+	// FIXME: No more than four actions are currently supported according to the reference doc.
 	mc.PotentialAction = append(mc.PotentialAction, action...)
-	//logger.Printf("Sections after append() call: %+v\n", mc.PotentialAction)
+
+	//logger.Printf("main card actions after append() call: %+v\n", mc.PotentialAction)
 }
 
 // AddFact adds one or many additional MessageCardSectionFact values to a
@@ -59,4 +63,17 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 
 	// if we made it this far then all should be well
 	return nil
+}
+
+// AddAction adds one or many additional MessageCardPotentialAction values to
+// a MessageCard.
+func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardSectionPotentialAction) {
+
+	//logger.Printf("DEBUG: Existing section actions: %+v\n", mcs.PotentialAction)
+	//logger.Printf("DEBUG: Incoming section actions: %+v\n", sectionAction)
+
+	// FIXME: No more than four actions are currently supported according to the reference doc.
+	mcs.PotentialAction = append(mcs.PotentialAction, sectionAction...)
+
+	//logger.Printf("Section actions after append() call: %+v\n", mcs.PotentialAction)
 }
