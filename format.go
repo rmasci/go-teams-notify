@@ -7,11 +7,33 @@ import (
 	"fmt"
 )
 
+// Even though Microsoft Teams doesn't show the additional newlines,
+// https://messagecardplayground.azurewebsites.net/ DOES show the results
+// as a formatted code block. Including the newlines now is an attempt at
+// "future proofing" the codeblock support in MessageCard values sent to
+// Microsoft Teams.
 const (
-	msTeamsCodeBlockSubmissionPrefix string = "```"
-	msTeamsCodeBlockSubmissionSuffix string = "```"
 
+	// msTeamsCodeBlockSubmissionPrefix is the prefix appended to text input
+	// to indicate that the text should be displayed as a codeblock by
+	// Microsoft Teams.
+	msTeamsCodeBlockSubmissionPrefix string = "\n```\n"
+	// msTeamsCodeBlockSubmissionPrefix string = "```"
+
+	// msTeamsCodeBlockSubmissionSuffix is the suffix appended to text input
+	// to indicate that the text should be displayed as a codeblock by
+	// Microsoft Teams.
+	msTeamsCodeBlockSubmissionSuffix string = "\n```\n"
+	// msTeamsCodeBlockSubmissionSuffix string = "```"
+
+	// msTeamsCodeSnippetSubmissionPrefix is the prefix appended to text input
+	// to indicate that the text should be displayed as a code formatted
+	// string of text by Microsoft Teams.
 	msTeamsCodeSnippetSubmissionPrefix string = "`"
+
+	// msTeamsCodeSnippetSubmissionSuffix is the suffix appended to text input
+	// to indicate that the text should be displayed as a code formatted
+	// string of text by Microsoft Teams.
 	msTeamsCodeSnippetSubmissionSuffix string = "`"
 )
 
