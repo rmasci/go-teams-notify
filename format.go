@@ -53,6 +53,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 		return "", errors.New("received empty string, refusing to format as code block")
 	}
 
+	logger.Printf("Calling json.Marshal(input); input: %+v", input)
 	byteSlice, err := json.Marshal(input)
 	if err != nil {
 		return "", err
