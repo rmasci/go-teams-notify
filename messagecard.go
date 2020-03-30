@@ -15,6 +15,16 @@ func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 	//logger.Printf("Sections after append() call: %+v\n", mc.Sections)
 }
 
+// AddAction adds one or many additional MessageCardPotentialAction values to
+// a MessageCard.
+func (mc *MessageCard) AddAction(action ...MessageCardPotentialAction) {
+
+	//logger.Printf("DEBUG: Existing actions: %+v\n", mc.PotentialAction)
+	//logger.Printf("DEBUG: Incoming actions: %+v\n", action)
+	mc.PotentialAction = append(mc.PotentialAction, action...)
+	//logger.Printf("Sections after append() call: %+v\n", mc.PotentialAction)
+}
+
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {

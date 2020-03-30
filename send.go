@@ -142,17 +142,14 @@ type MessageCardSectionFact struct {
 
 // MessageCardPotentialAction represents an action that a user may take for a
 // received Microsoft Teams message.
-//
-// NOTE: Disabled for now due to potential complexity of implementation
-//
-// type MessageCardPotentialAction struct {
-// 	Target          []string `json:"target"`
-// 	Context         string   `json:"@context"`
-// 	Type            string   `json:"@type"`
-// 	ID              string   `json:"@id"`
-// 	Name            string   `json:"name"`
-// 	IsPrimaryAction bool     `json:"isPrimaryAction"`
-// }
+type MessageCardPotentialAction struct {
+	Target          []string `json:"target"`
+	Context         string   `json:"@context"`
+	Type            string   `json:"@type"`
+	ID              string   `json:"@id"`
+	Name            string   `json:"name"`
+	IsPrimaryAction bool     `json:"isPrimaryAction"`
+}
 
 // https://golang.org/pkg/encoding/json/
 //
@@ -234,10 +231,7 @@ type MessageCard struct {
 	Sections []MessageCardSection `json:"sections,omitempty"`
 
 	// PotentialAction is a collection of actions that can be invoked on this card.
-	//
-	// NOTE: Disabled for now due to potential complexity of implementation
-	//
-	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
+	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
 // NewMessageCard creates a new message card with required fields required by
