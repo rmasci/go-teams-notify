@@ -5,14 +5,6 @@ import (
 	"strings"
 )
 
-const (
-	msTeamsCodeBlockSubmissionPrefix string = "\"\\n```"
-	msTeamsCodeBlockSubmissionSuffix string = "```\""
-
-	msTeamsCodeSnippetSubmissionPrefix string = "\"`"
-	msTeamsCodeSnippetSubmissionSuffix string = "`\""
-)
-
 // AddSection adds one or many additional MessageCardSection values to a
 // MessageCard.
 func (mc *MessageCard) AddSection(section ...MessageCardSection) {

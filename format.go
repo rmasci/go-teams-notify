@@ -7,6 +7,14 @@ import (
 	"fmt"
 )
 
+const (
+	msTeamsCodeBlockSubmissionPrefix string = "```"
+	msTeamsCodeBlockSubmissionSuffix string = "```"
+
+	msTeamsCodeSnippetSubmissionPrefix string = "`"
+	msTeamsCodeSnippetSubmissionSuffix string = "`"
+)
+
 // FormatAsCodeBlock accepts an arbitrary string, quoted or not, and calls a
 // helper function which attempts to format as a valid Markdown code block for
 // submission to Microsoft Teams
@@ -48,15 +56,25 @@ func FormatAsCodeSnippet(input string) (string, error) {
 // as a valid Markdown formatted code sample for submission to Microsoft Teams
 func formatAsCode(input string, prefix string, suffix string) (string, error) {
 
-	// required; protects against slice out of range panics
-	if input == "" {
-		return "", errors.New("received empty string, refusing to format as code block")
-	}
+	var err error
+	var byteSlice []byte
 
-	logger.Printf("Calling json.Marshal(input); input: %+v", input)
-	byteSlice, err := json.Marshal(input)
-	if err != nil {
-		return "", err
+	switch {
+
+	// required; protects against slice out of range panics
+	case input == "":
+		return "", errors.New("received empty string, refusing to format as code block")
+
+	case json.Valid([]byte(input)):
+		logger.Printf("Calling json.RawMessage([]byte(input)); input: %+v", input)
+		byteSlice = json.RawMessage([]byte(input))
+
+	default:
+		logger.Printf("Calling json.Marshal(input); input: %+v", input)
+		byteSlice, err = json.Marshal(input)
+		if err != nil {
+			return "", err
+		}
 	}
 
 	logger.Println("byteSlice as string:", string(byteSlice))
@@ -64,7 +82,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	var prettyJSON bytes.Buffer
 
 	logger.Println("calling json.Indent")
-	err = json.Indent(&prettyJSON, []byte(input), "", "\t")
+	err = json.Indent(&prettyJSON, byteSlice, "", "\t")
 	if err != nil {
 		return "", err
 	}
