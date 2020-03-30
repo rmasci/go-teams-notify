@@ -62,6 +62,8 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	logger.Println("byteSlice as string:", string(byteSlice))
 
 	var prettyJSON bytes.Buffer
+
+	logger.Println("calling json.Indent")
 	err = json.Indent(&prettyJSON, []byte(input), "", "\t")
 	if err != nil {
 		return "", err
