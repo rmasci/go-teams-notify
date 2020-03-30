@@ -9,8 +9,8 @@ import (
 // MessageCard.
 func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 
-	//logger.Printf("Existing sections: %+v\n", mc.Sections)
-	//logger.Printf("Incoming sections: %+v\n", section)
+	//logger.Printf("DEBUG: Existing sections: %+v\n", mc.Sections)
+	//logger.Printf("DEBUG: Incoming sections: %+v\n", section)
 	mc.Sections = append(mc.Sections, section...)
 	//logger.Printf("Sections after append() call: %+v\n", mc.Sections)
 }
@@ -29,8 +29,8 @@ func (mc *MessageCard) AddAction(action ...MessageCardPotentialAction) {
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
 
-	//logger.Printf("Existing sections: %+v\n", mcs.Facts)
-	//logger.Printf("Incoming sections: %+v\n", fact)
+	//logger.Printf("DEBUG: Existing sections: %+v\n", mcs.Facts)
+	//logger.Printf("DEBUG: Incoming sections: %+v\n", fact)
 	mcs.Facts = append(mcs.Facts, fact...)
 	//logger.Printf("Facts after append() call: %+v\n", mcs.Facts)
 
