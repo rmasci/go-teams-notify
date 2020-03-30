@@ -67,7 +67,7 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 
 // AddAction adds one or many additional MessageCardPotentialAction values to
 // a MessageCard.
-func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardSectionPotentialAction) {
+func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardPotentialAction) {
 
 	//logger.Printf("DEBUG: Existing section actions: %+v\n", mcs.PotentialAction)
 	//logger.Printf("DEBUG: Incoming section actions: %+v\n", sectionAction)
