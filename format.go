@@ -87,30 +87,34 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	case input == "":
 		return "", errors.New("received empty string, refusing to format as code block")
 
+	// If the input string is already valid JSON, don't double-encode and
+	// escape the content
 	case json.Valid([]byte(input)):
-		logger.Printf("Calling json.RawMessage([]byte(input)); input: %+v", input)
+		logger.Printf("DEBUG: input string already valid JSON; input: %+v", input)
+		logger.Printf("DEBUG: Calling json.RawMessage([]byte(input)); input: %+v", input)
 		byteSlice = json.RawMessage([]byte(input))
 
 	default:
-		logger.Printf("Calling json.Marshal(input); input: %+v", input)
+		logger.Printf("DEBUG: input string not valid JSON; input: %+v", input)
+		logger.Printf("DEBUG: Calling json.Marshal(input); input: %+v", input)
 		byteSlice, err = json.Marshal(input)
 		if err != nil {
 			return "", err
 		}
 	}
 
-	logger.Println("byteSlice as string:", string(byteSlice))
+	logger.Println("DEBUG: byteSlice as string:", string(byteSlice))
 
 	var prettyJSON bytes.Buffer
 
-	logger.Println("calling json.Indent")
+	logger.Println("DEBUG: calling json.Indent")
 	err = json.Indent(&prettyJSON, byteSlice, "", "\t")
 	if err != nil {
 		return "", err
 	}
 	formattedJSON := prettyJSON.String()
 
-	logger.Println("Formatted JSON:", formattedJSON)
+	logger.Println("DEBUG: Formatted JSON:", formattedJSON)
 
 	var codeContentForSubmission string
 
@@ -146,9 +150,9 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 		codeContentForSubmission = prefix + string(formattedJSON[1:len(formattedJSON)-1]) + suffix
 	}
 
-	logger.Printf("... as-is:\n%s\n\n", string(formattedJSON))
-	logger.Printf("... without leading and trailing double-quotes: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
-	logger.Printf("codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
+	logger.Printf("DEBUG: ... as-is:\n%s\n\n", string(formattedJSON))
+	logger.Printf("DEBUG: ... without leading and trailing double-quotes: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
+	logger.Printf("DEBUG: codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
 
 	// err should be nil if everything worked as expected
 	return codeContentForSubmission, err
