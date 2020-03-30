@@ -51,6 +51,8 @@ func DisableLogging() {
 }
 
 // NewClient - create a brand new client for MS Teams notify
+// FIXME: Upstream v2 removed error return code here
+// TODO: Look at other changes made to v2 and merge
 func NewClient() (API, error) {
 	client := teamsClient{
 		httpClient: &http.Client{
