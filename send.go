@@ -233,6 +233,8 @@ type MessageCardSection struct {
 	// We use a pointer to this type in order to have the json package
 	// properly omit this field if not explicitly set.
 	// https://github.com/golang/go/issues/11939
+	// https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go
+	// https://stackoverflow.com/questions/33447334/golang-json-marshal-how-to-omit-empty-nested-struct
 	HeroImage *MessageCardSectionImage `json:"heroImage,omitempty"`
 
 	// Facts is a collection of MessageCardSectionFact values. A section entry
@@ -248,6 +250,8 @@ type MessageCardSection struct {
 	// We use a slice of pointers to this type in order to have the json
 	// package properly omit this field if not explicitly set.
 	// https://github.com/golang/go/issues/11939
+	// https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go
+	// https://stackoverflow.com/questions/33447334/golang-json-marshal-how-to-omit-empty-nested-struct
 	Images []*MessageCardSectionImage `json:"images,omitempty"`
 }
 
