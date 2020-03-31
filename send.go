@@ -242,7 +242,7 @@ type MessageCardSection struct {
 
 	// Images is a property that allows for the inclusion of a photo gallery
 	// inside a section.
-	Images []MessageCardSectionImage `json:"images,omitempty"`
+	Images []*MessageCardSectionImage `json:"images,omitempty"`
 }
 
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors

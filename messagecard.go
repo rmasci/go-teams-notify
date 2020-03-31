@@ -10,6 +10,8 @@ import (
 // MessageCard.
 func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 
+	// TODO: Add validation here to check required fields for empty values.
+
 	//logger.Printf("DEBUG: Existing sections: %+v\n", mc.Sections)
 	//logger.Printf("DEBUG: Incoming sections: %+v\n", section)
 	mc.Sections = append(mc.Sections, section...)
@@ -33,6 +35,8 @@ func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
+
+	// TODO: Add validation here to check required fields for empty values.
 
 	//logger.Printf("DEBUG: Existing sections: %+v\n", mcs.Facts)
 	//logger.Printf("DEBUG: Incoming sections: %+v\n", fact)
@@ -82,7 +86,17 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 // AddImage adds one or many additional MessageCardSectionImage values to
 // a MessageCard section. These values are used to provide a photo gallery
 // inside a MessageCard section.
-func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) {
+func (mcs *MessageCardSection) AddImage(sectionImage ...*MessageCardSectionImage) {
+
+	// TODO: Add validation here to check required fields for empty values.
+
+	// if imageURL == "" {
+	// 	return fmt.Errorf("cannot add empty hero image URL")
+	// }
+
+	// if imageTitle == "" {
+	// 	return fmt.Errorf("cannot add empty hero image title")
+	// }
 
 	//logger.Printf("DEBUG: Existing section images: %+v\n", mcs.Images)
 	//logger.Printf("DEBUG: Incoming section images: %+v\n", sectionImage)
