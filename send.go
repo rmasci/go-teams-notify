@@ -192,25 +192,6 @@ type MessageCardSection struct {
 	// the text property of the card. It can be used for the same purpose.
 	Text string `json:"text,omitempty"`
 
-	// Markdown represents a toggle to enable or disable Markdown formatting.
-	// By default, all text fields in a card and its sections can be formatted
-	// using basic Markdown.
-	Markdown bool `json:"markdown,omitempty"`
-
-	// Facts is a collection of MessageCardSectionFact values. A section entry
-	// usually is displayed in a two-column key/value format.
-	Facts []MessageCardSectionFact `json:"facts,omitempty"`
-
-	// PotentialAction is a collection of actions that can be invoked on this
-	// section.
-	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
-
-	// StartGroup is the section's startGroup property. This property marks
-	// the start of a logical group of information. Typically, sections with
-	// startGroup set to true will be visually separated from previous card
-	// elements.
-	StartGroup bool `json:"startGroup,omitempty"`
-
 	// ActivityImage is a property used to display a picture associated with
 	// the subject of a message card. For example, this might be the portrait
 	// of a person who performed an activity that the message card is
@@ -236,6 +217,25 @@ type MessageCardSection struct {
 	// centerprice of a message card. This property can also be used to add a
 	// banner to the message card.
 	HeroImage string `json:"heroImage,omitempty"`
+
+	// Markdown represents a toggle to enable or disable Markdown formatting.
+	// By default, all text fields in a card and its sections can be formatted
+	// using basic Markdown.
+	Markdown bool `json:"markdown,omitempty"`
+
+	// StartGroup is the section's startGroup property. This property marks
+	// the start of a logical group of information. Typically, sections with
+	// startGroup set to true will be visually separated from previous card
+	// elements.
+	StartGroup bool `json:"startGroup,omitempty"`
+
+	// Facts is a collection of MessageCardSectionFact values. A section entry
+	// usually is displayed in a two-column key/value format.
+	Facts []MessageCardSectionFact `json:"facts,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this
+	// section.
+	PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
 
 	// Images is a property that allows for the inclusion of a photo gallery
 	// inside a section.
