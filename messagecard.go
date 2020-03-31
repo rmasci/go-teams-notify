@@ -10,6 +10,19 @@ import (
 // MessageCard.
 func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 
+	// TODO: Confirm that empty sections are omitted if user defines
+	// them and tries to send them to Teams
+
+	// for _, s := range section {
+	// 	if s. == "" {
+	// 		return fmt.Errorf("empty Name field received for new fact: %+v", f)
+	// 	}
+
+	// 	if f.Value == "" {
+	// 		return fmt.Errorf("empty Name field received for new fact: %+v", f)
+	// 	}
+	// }
+
 	// TODO: Add validation here to check required fields for empty values.
 
 	//logger.Printf("DEBUG: Existing sections: %+v\n", mc.Sections)
@@ -34,14 +47,24 @@ func (mc *MessageCard) AddSection(section ...MessageCardSection) {
 
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
-func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) {
+func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 
-	// TODO: Add validation here to check required fields for empty values.
+	for _, f := range fact {
+		if f.Name == "" {
+			return fmt.Errorf("empty Name field received for new fact: %+v", f)
+		}
+
+		if f.Value == "" {
+			return fmt.Errorf("empty Name field received for new fact: %+v", f)
+		}
+	}
 
 	//logger.Printf("DEBUG: Existing sections: %+v\n", mcs.Facts)
 	//logger.Printf("DEBUG: Incoming sections: %+v\n", fact)
 	mcs.Facts = append(mcs.Facts, fact...)
 	//logger.Printf("Facts after append() call: %+v\n", mcs.Facts)
+
+	return nil
 
 }
 
@@ -83,28 +106,29 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 // 	//logger.Printf("Section actions after append() call: %+v\n", mcs.PotentialAction)
 // }
 
-// AddImage adds one or many additional MessageCardSectionImage values to
-// a MessageCard section. These values are used to provide a photo gallery
-// inside a MessageCard section.
-func (mcs *MessageCardSection) AddImage(sectionImage ...*MessageCardSectionImage) {
-
-	// TODO: Add validation here to check required fields for empty values.
-
-	// if imageURL == "" {
-	// 	return fmt.Errorf("cannot add empty hero image URL")
-	// }
-
-	// if imageTitle == "" {
-	// 	return fmt.Errorf("cannot add empty hero image title")
-	// }
+// AddImage adds an image to a MessageCard section. These images are used to
+// provide a photo gallery inside a MessageCard section.
+func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) error {
 
 	//logger.Printf("DEBUG: Existing section images: %+v\n", mcs.Images)
 	//logger.Printf("DEBUG: Incoming section images: %+v\n", sectionImage)
 
-	// FIXME: No more than four actions are currently supported according to the reference doc.
-	mcs.Images = append(mcs.Images, sectionImage...)
+	for _, img := range sectionImage {
+		if img.Image == "" {
+			return fmt.Errorf("cannot add empty image URL")
+		}
 
-	//logger.Printf("Section images after append() call: %+v\n", mcs.Images)
+		if img.Title == "" {
+			return fmt.Errorf("cannot add empty image title")
+		}
+
+		mcs.Images = append(mcs.Images, &img)
+
+	}
+
+	//logger.Printf("Section images after append() calls: %+v\n", mcs.Images)
+
+	return nil
 }
 
 // AddHeroImage adds a Hero Image to a MessageCard section. This image is used
