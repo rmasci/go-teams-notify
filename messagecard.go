@@ -2,6 +2,7 @@ package goteamsnotify
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -76,4 +77,45 @@ func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardPotentialAc
 	mcs.PotentialAction = append(mcs.PotentialAction, sectionAction...)
 
 	//logger.Printf("Section actions after append() call: %+v\n", mcs.PotentialAction)
+}
+
+// AddImage adds one or many additional MessageCardSectionImage values to
+// a MessageCard section. These values are used to provide a photo gallery
+// inside a MessageCard section.
+func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) {
+
+	//logger.Printf("DEBUG: Existing section images: %+v\n", mcs.Images)
+	//logger.Printf("DEBUG: Incoming section images: %+v\n", sectionImage)
+
+	// FIXME: No more than four actions are currently supported according to the reference doc.
+	mcs.Images = append(mcs.Images, sectionImage...)
+
+	//logger.Printf("Section images after append() call: %+v\n", mcs.Images)
+}
+
+// AddHeroImage adds a Hero Image to a MessageCard section. This image is used
+// as the centerprice or banner of a message card.
+func (mcs *MessageCardSection) AddHeroImage(imageURL string, imageTitle string) error {
+
+	if imageURL == "" {
+		return fmt.Errorf("cannot add empty hero image URL")
+	}
+
+	if imageTitle == "" {
+		return fmt.Errorf("cannot add empty hero image title")
+	}
+
+	heroImage := MessageCardSectionImage{
+		Image: imageURL,
+		Title: imageTitle,
+	}
+	// heroImage := NewMessageCardSectionImage()
+	// heroImage.Image = imageURL
+	// heroImage.Title = imageTitle
+
+	mcs.HeroImage = heroImage
+
+	// our validation checks didn't find any problems
+	return nil
+
 }

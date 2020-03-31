@@ -313,6 +313,16 @@ func NewMessageCardSection() MessageCardSection {
 
 }
 
+// NewMessageCardSectionImage creates an empty image for use with message card
+// section
+func NewMessageCardSectionImage() MessageCardSectionImage {
+
+	msgCardSectionImage := MessageCardSectionImage{}
+
+	return msgCardSectionImage
+
+}
+
 // NewMessageCardPotentialAction creates an empty potential action value. This
 // value may be added or attached to the main message card value OR to a
 // specific message card section.
