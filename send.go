@@ -210,7 +210,8 @@ type MessageCardSection struct {
 
 	// ActivityText is a property used to provide details about the activity.
 	// For example, if the message card is used to deliver updates about a
-	// topic, then this property would be used to hold the
+	// topic, then this property would be used to hold the bulk of the content
+	// for the update notification.
 	ActivityText string `json:"activityText,omitempty"`
 
 	// Markdown represents a toggle to enable or disable Markdown formatting.
