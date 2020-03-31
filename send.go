@@ -227,6 +227,8 @@ type MessageCardSection struct {
 	// HeroImage is a property that allows for setting an image as the
 	// centerprice of a message card. This property can also be used to add a
 	// banner to the message card.
+	// Note: heroImage is not currently supported by Microsoft Teams
+	// https://stackoverflow.com/a/45389789
 	HeroImage *MessageCardSectionImage `json:"heroImage,omitempty"`
 
 	// Facts is a collection of MessageCardSectionFact values. A section entry
@@ -249,6 +251,7 @@ type MessageCardSection struct {
 // https://messagecardplayground.azurewebsites.net/
 // https://connectplayground.azurewebsites.net/
 // https://github.com/atc0005/bounce/issues/21
+// https://stackoverflow.com/a/45389789
 
 // MessageCard represents a legacy actionable message card used via Office 365
 // or Microsoft Teams connectors.
@@ -313,19 +316,15 @@ func NewMessageCardSection() MessageCardSection {
 
 }
 
-//
-// FIXME: Use AddHeroImage method instead since HeroImage is a pointer to
-// MessageCardSectionImage?
-//
 // NewMessageCardSectionImage creates an empty image for use with message card
 // section
-// func NewMessageCardSectionImage() MessageCardSectionImage {
+func NewMessageCardSectionImage() MessageCardSectionImage {
 
-// 	msgCardSectionImage := MessageCardSectionImage{}
+	msgCardSectionImage := MessageCardSectionImage{}
 
-// 	return msgCardSectionImage
+	return msgCardSectionImage
 
-// }
+}
 
 // NewMessageCardPotentialAction creates an empty potential action value. This
 // value may be added or attached to the main message card value OR to a
