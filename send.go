@@ -140,6 +140,19 @@ type MessageCardSectionFact struct {
 	Value string `json:"value"`
 }
 
+// MessageCardSectionImage represents an image as used by the heroImage and
+// images properties of a section.
+type MessageCardSectionImage struct {
+
+	// Image is the URL to the image.
+	Image string `json:"image"`
+
+	// Title is a short description of the image. Typically, this description
+	// is displayed in a tooltip as the user hovers their mouse over the
+	// image.
+	Title string `json:"title"`
+}
+
 // MessageCardPotentialAction represents an action that a user may take for a
 // received Microsoft Teams message. Actions may be defined for the card
 // as a whole and/or in specifc sections.
@@ -197,6 +210,36 @@ type MessageCardSection struct {
 	// startGroup set to true will be visually separated from previous card
 	// elements.
 	StartGroup bool `json:"startGroup,omitempty"`
+
+	// ActivityImage is a property used to display a picture associated with
+	// the subject of a message card. For example, this might be the portrait
+	// of a person who performed an activity that the message card is
+	// associated with.
+	ActivityImage string `json:"activityImage,omitempty"`
+
+	// ActivityTitle is a property used to summarize the activity associated
+	// with a message card.
+	ActivityTitle string `json:"activityTitle,omitempty"`
+
+	// ActivitySubtitle is a property used to show brief, but extended
+	// information about an activity associated with a message card. Examples
+	// include the date and time the associated activity was taken or the
+	// handle of a person associated with the activity.
+	ActivitySubtitle string `json:"activitySubtitle,omitempty"`
+
+	// ActivityText is a property used to provide details about the activity.
+	// For example, if the message card is used to deliver updates about a
+	// topic, then this property would be used to hold the
+	ActivityText string `json:"activityText,omitempty"`
+
+	// HeroImage is a property that allows for setting an image as the
+	// centerprice of a message card. This property can also be used to add a
+	// banner to the message card.
+	HeroImage string `json:"heroImage,omitempty"`
+
+	// Images is a property that allows for the inclusion of a photo gallery
+	// inside a section.
+	Images []MessageCardSectionImage `json:"images,omitempty"`
 }
 
 // https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
