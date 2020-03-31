@@ -216,7 +216,7 @@ type MessageCardSection struct {
 	// HeroImage is a property that allows for setting an image as the
 	// centerprice of a message card. This property can also be used to add a
 	// banner to the message card.
-	HeroImage string `json:"heroImage,omitempty"`
+	HeroImage MessageCardSectionImage `json:"heroImage,omitempty"`
 
 	// Markdown represents a toggle to enable or disable Markdown formatting.
 	// By default, all text fields in a card and its sections can be formatted
