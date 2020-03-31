@@ -151,7 +151,7 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	}
 
 	logger.Printf("DEBUG: ... as-is:\n%s\n\n", string(formattedJSON))
-	logger.Printf("DEBUG: ... without leading and trailing double-quotes: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
+	logger.Printf("DEBUG: ... without first and last characters: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
 	logger.Printf("DEBUG: codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
 
 	// err should be nil if everything worked as expected
