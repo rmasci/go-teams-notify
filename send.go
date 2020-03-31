@@ -213,11 +213,6 @@ type MessageCardSection struct {
 	// topic, then this property would be used to hold the
 	ActivityText string `json:"activityText,omitempty"`
 
-	// HeroImage is a property that allows for setting an image as the
-	// centerprice of a message card. This property can also be used to add a
-	// banner to the message card.
-	HeroImage MessageCardSectionImage `json:"heroImage,omitempty"`
-
 	// Markdown represents a toggle to enable or disable Markdown formatting.
 	// By default, all text fields in a card and its sections can be formatted
 	// using basic Markdown.
@@ -228,6 +223,11 @@ type MessageCardSection struct {
 	// startGroup set to true will be visually separated from previous card
 	// elements.
 	StartGroup bool `json:"startGroup,omitempty"`
+
+	// HeroImage is a property that allows for setting an image as the
+	// centerprice of a message card. This property can also be used to add a
+	// banner to the message card.
+	HeroImage MessageCardSectionImage `json:"heroImage,omitempty"`
 
 	// Facts is a collection of MessageCardSectionFact values. A section entry
 	// usually is displayed in a two-column key/value format.
