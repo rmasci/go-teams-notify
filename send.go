@@ -226,7 +226,7 @@ type MessageCardSection struct {
 	StartGroup bool `json:"startGroup,omitempty"`
 
 	// HeroImage is a property that allows for setting an image as the
-	// centerprice of a message card. This property can also be used to add a
+	// centerpiece of a message card. This property can also be used to add a
 	// banner to the message card.
 	// Note: heroImage is not currently supported by Microsoft Teams
 	// https://stackoverflow.com/a/45389789

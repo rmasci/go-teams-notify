@@ -131,9 +131,10 @@ func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage)
 	return nil
 }
 
-// AddHeroImage adds a Hero Image to a MessageCard section. This image is used
-// as the centerprice or banner of a message card.
-func (mcs *MessageCardSection) AddHeroImage(imageURL string, imageTitle string) error {
+// AddHeroImageStr adds a Hero Image to a MessageCard section using string
+// arguments. This image is used as the centerpiece or banner of a message
+// card.
+func (mcs *MessageCardSection) AddHeroImageStr(imageURL string, imageTitle string) error {
 
 	if imageURL == "" {
 		return fmt.Errorf("cannot add empty hero image URL")
@@ -150,6 +151,26 @@ func (mcs *MessageCardSection) AddHeroImage(imageURL string, imageTitle string) 
 	// heroImage := NewMessageCardSectionImage()
 	// heroImage.Image = imageURL
 	// heroImage.Title = imageTitle
+
+	mcs.HeroImage = &heroImage
+
+	// our validation checks didn't find any problems
+	return nil
+
+}
+
+// AddHeroImage adds a Hero Image to a MessageCard section using a
+// MessageCardSectionImage argument. This image is used as the centerpiece or
+// banner of a message card.
+func (mcs *MessageCardSection) AddHeroImage(heroImage MessageCardSectionImage) error {
+
+	if heroImage.Image == "" {
+		return fmt.Errorf("cannot add empty hero image URL")
+	}
+
+	if heroImage.Title == "" {
+		return fmt.Errorf("cannot add empty hero image title")
+	}
 
 	mcs.HeroImage = &heroImage
 
