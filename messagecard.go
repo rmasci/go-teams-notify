@@ -113,7 +113,7 @@ func (mcs *MessageCardSection) AddHeroImage(imageURL string, imageTitle string) 
 	// heroImage.Image = imageURL
 	// heroImage.Title = imageTitle
 
-	mcs.HeroImage = heroImage
+	mcs.HeroImage = &heroImage
 
 	// our validation checks didn't find any problems
 	return nil
