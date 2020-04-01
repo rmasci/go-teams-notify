@@ -68,6 +68,9 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 
 	for _, f := range fact {
+
+		logger.Printf("DEBUG: MessageCardSectionFact received: %+v\n", f)
+
 		if f.Name == "" {
 			return fmt.Errorf("empty Name field received for new fact: %+v", f)
 		}
@@ -79,6 +82,7 @@ func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 
 	//logger.Printf("DEBUG: Existing sections: %+v\n", mcs.Facts)
 	//logger.Printf("DEBUG: Incoming sections: %+v\n", fact)
+	logger.Println("DEBUG: section fact contains at least one non-zero value, adding section fact")
 	mcs.Facts = append(mcs.Facts, fact...)
 	//logger.Printf("Facts after append() call: %+v\n", mcs.Facts)
 

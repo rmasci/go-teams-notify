@@ -329,6 +329,15 @@ func NewMessageCardSection() *MessageCardSection {
 
 }
 
+// NewMessageCardSectionFact creates an empty message card section fact
+func NewMessageCardSectionFact() MessageCardSectionFact {
+
+	msgCardSectionFact := MessageCardSectionFact{}
+
+	return msgCardSectionFact
+
+}
+
 // NewMessageCardSectionImage creates an empty image for use with message card
 // section
 func NewMessageCardSectionImage() MessageCardSectionImage {
