@@ -21,6 +21,7 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		if s == nil {
 			msg := "nil MessageCardSection received by AddSection"
 			logger.Println(msg)
+			logger.Println("returning error message which forces rejection of invalid MessageCardSection")
 			return fmt.Errorf(msg)
 		}
 
@@ -41,8 +42,7 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		case s.Title != "":
 
 		default:
-			logger.Println("No cases matched, all fields assumed to be at zero-value")
-			logger.Println("Skipping section")
+			logger.Println("No cases matched, all fields assumed to be at zero-value, skipping section")
 			continue
 		}
 
