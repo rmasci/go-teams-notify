@@ -19,10 +19,9 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
 		// bail if a completely nil section provided
 		if s == nil {
-			msg := "nil MessageCardSection received by AddSection"
-			logger.Println(msg)
+			logger.Println("DEBUG: nil MessageCardSection received by AddSection")
 			logger.Println("DEBUG: returning error message which forces rejection of invalid MessageCardSection")
-			return fmt.Errorf(msg)
+			return fmt.Errorf("nil MessageCardSection received by AddSection")
 		}
 
 		// Perform validation of all MessageCardSection fields in an effort to
