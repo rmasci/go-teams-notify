@@ -15,13 +15,13 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
 	for _, s := range section {
 
-		logger.Printf("MessageCardSection received: %+v\n", s)
+		logger.Printf("DEBUG: MessageCardSection received: %+v\n", s)
 
 		// bail if a completely nil section provided
 		if s == nil {
 			msg := "nil MessageCardSection received by AddSection"
 			logger.Println(msg)
-			logger.Println("returning error message which forces rejection of invalid MessageCardSection")
+			logger.Println("DEBUG: returning error message which forces rejection of invalid MessageCardSection")
 			return fmt.Errorf(msg)
 		}
 
@@ -50,9 +50,11 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		case s.Title != "":
 
 		default:
-			logger.Println("No cases matched, all fields assumed to be at zero-value, skipping section")
+			logger.Println("DEBUG: No cases matched, all fields assumed to be at zero-value, skipping section")
 			continue
 		}
+
+		logger.Println("DEBUG: section contains at least one non-zero value, adding section")
 
 		mc.Sections = append(mc.Sections, s)
 
