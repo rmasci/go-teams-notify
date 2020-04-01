@@ -65,6 +65,8 @@ func NewClient() (API, error) {
 // Send - will post a notification to MS Teams incomingWebhookURL
 func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 
+	logger.Printf("Received: %#v\n", webhookMessage)
+
 	// validate url
 	if valid, err := IsValidWebhookURL(webhookURL); !valid {
 		return err
@@ -297,7 +299,7 @@ type MessageCard struct {
 	ThemeColor string `json:"themeColor,omitempty"`
 
 	// Sections is a collection of sections to include in the card.
-	Sections []MessageCardSection `json:"sections,omitempty"`
+	Sections []*MessageCardSection `json:"sections,omitempty"`
 
 	// PotentialAction is a collection of actions that can be invoked on this card.
 	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
@@ -319,11 +321,11 @@ func NewMessageCard() MessageCard {
 }
 
 // NewMessageCardSection creates an empty message card section
-func NewMessageCardSection() MessageCardSection {
+func NewMessageCardSection() *MessageCardSection {
 
 	msgCardSection := MessageCardSection{}
 
-	return msgCardSection
+	return &msgCardSection
 
 }
 

@@ -7,43 +7,52 @@ import (
 )
 
 // AddSection adds one or many additional MessageCardSection values to a
-// MessageCard.
-func (mc *MessageCard) AddSection(section ...MessageCardSection) {
+// MessageCard. Validation is performed to reject invalid values with an error
+// message.
+func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
-	// TODO: Confirm that empty sections are omitted if user defines
-	// them and tries to send them to Teams
+	var err error
 
-	// for _, s := range section {
-	// 	if s. == "" {
-	// 		return fmt.Errorf("empty Name field received for new fact: %+v", f)
-	// 	}
+	for _, s := range section {
 
-	// 	if f.Value == "" {
-	// 		return fmt.Errorf("empty Name field received for new fact: %+v", f)
-	// 	}
-	// }
+		logger.Printf("MessageCardSection received: %+v\n", s)
 
-	// TODO: Add validation here to check required fields for empty values.
+		// bail if a completely nil section provided
+		if s == nil {
+			msg := "nil MessageCardSection received by AddSection"
+			logger.Println(msg)
+			return fmt.Errorf(msg)
+		}
 
-	//logger.Printf("DEBUG: Existing sections: %+v\n", mc.Sections)
-	//logger.Printf("DEBUG: Incoming sections: %+v\n", section)
-	mc.Sections = append(mc.Sections, section...)
-	//logger.Printf("Sections after append() call: %+v\n", mc.Sections)
+		switch {
+
+		// If any of these cases trigger, add the section. This is
+		// accomplished by not using the `default` case section.
+		case s.Images != nil:
+		case s.Facts != nil:
+		case s.HeroImage != nil:
+		case s.StartGroup != false:
+		case s.Markdown != false:
+		case s.ActivityText != "":
+		case s.ActivitySubtitle != "":
+		case s.ActivityTitle != "":
+		case s.ActivityImage != "":
+		case s.Text != "":
+		case s.Title != "":
+
+		default:
+			logger.Println("No cases matched, all fields assumed to be at zero-value")
+			logger.Println("Skipping section")
+			continue
+		}
+
+		mc.Sections = append(mc.Sections, s)
+
+	}
+
+	return err
+
 }
-
-// AddAction adds one or many additional MessageCardPotentialAction values to
-// a MessageCard. It is also possible to add MessageCardPotentialAction values
-// to specific sections as well.
-// func (mc *MessageCard) AddAction(action ...MessageCardPotentialAction) {
-
-// 	//logger.Printf("DEBUG: Existing main card actions: %+v\n", mc.PotentialAction)
-// 	//logger.Printf("DEBUG: Incoming main card actions: %+v\n", action)
-
-// 	// FIXME: No more than four actions are currently supported according to the reference doc.
-// 	mc.PotentialAction = append(mc.PotentialAction, action...)
-
-// 	//logger.Printf("main card actions after append() call: %+v\n", mc.PotentialAction)
-// }
 
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
