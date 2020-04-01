@@ -25,6 +25,14 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 			return fmt.Errorf(msg)
 		}
 
+		// Perform validation of all MessageCardSection fields in an effort to
+		// avoid adding a MessageCardSection with zero value fields. This is
+		// done to avoid generating an empty sections JSON array since the
+		// Sections slice for the MessageCard type would technically not be at
+		// a zero value state. Due to this non-zero value state, the
+		// encoding/json package would end up including the Sections struct
+		// field in the output JSON.
+		// See also https://github.com/golang/go/issues/11939
 		switch {
 
 		// If any of these cases trigger, add the section. This is
