@@ -92,7 +92,15 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	case json.Valid([]byte(input)):
 		logger.Printf("DEBUG: input string already valid JSON; input: %+v", input)
 		logger.Printf("DEBUG: Calling json.RawMessage([]byte(input)); input: %+v", input)
+
+		// FIXME: Is json.RawMessage() really needed if the input string is *already* JSON?
+		// https://golang.org/pkg/encoding/json/#RawMessage seems to imply a different use case.
 		byteSlice = json.RawMessage([]byte(input))
+		//
+		// From light testing, it appears to not be necessary:
+		//
+		// logger.Printf("DEBUG: Skipping json.RawMessage, converting string directly to byte slice; input: %+v", input)
+		// byteSlice = []byte(input)
 
 	default:
 		logger.Printf("DEBUG: input string not valid JSON; input: %+v", input)
