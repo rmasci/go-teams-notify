@@ -49,7 +49,7 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		case s.Title != "":
 
 		default:
-			logger.Println("DEBUG: No cases matched, all fields assumed to be at zero-value, skipping section")
+			logger.Println("AddSection: No cases matched, all fields assumed to be at zero-value, skipping section")
 			//continue
 			// we probably need to return an error here so that client code can
 			// handle the situation accordingly
