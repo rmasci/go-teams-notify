@@ -22,7 +22,7 @@ const (
 	// msTeamsCodeBlockSubmissionSuffix is the suffix appended to text input
 	// to indicate that the text should be displayed as a codeblock by
 	// Microsoft Teams.
-	msTeamsCodeBlockSubmissionSuffix string = "\n```\n"
+	msTeamsCodeBlockSubmissionSuffix string = "```\n"
 	// msTeamsCodeBlockSubmissionSuffix string = "```"
 
 	// msTeamsCodeSnippetSubmissionPrefix is the prefix appended to text input
