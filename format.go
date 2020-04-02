@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
+	"github.com/apex/log"
 )
 
 // Even though Microsoft Teams doesn't show the additional newlines,
@@ -36,6 +38,40 @@ const (
 	// string of text by Microsoft Teams.
 	msTeamsCodeSnippetSubmissionSuffix string = "`"
 )
+
+// TryToFormatAsCodeBlock acts as a wrapper for FormatAsCodeBlock. If an
+// error is encountered in the FormatAsCodeBlock function, this function will
+// return the original string, otherwise if no errors occur the newly formatted
+// string will be returned.
+func TryToFormatAsCodeBlock(input string) string {
+
+	result, err := FormatAsCodeBlock(input)
+	if err != nil {
+		log.Debugf("TryToFormatAsCodeBlock: error occurred when calling FormatAsCodeBlock: %v", err)
+		log.Debug("TryToFormatAsCodeBlock: returning original string")
+		return input
+	}
+
+	log.Debug("TryToFormatAsCodeBlock: no errors occurred when calling FormatAsCodeBlock")
+	return result
+}
+
+// TryToFormatAsCodeSnippet acts as a wrapper for FormatAsCodeSnippet. If
+// an error is encountered in the FormatAsCodeSnippet function, this function will
+// return the original string, otherwise if no errors occur the newly formatted
+// string will be returned.
+func TryToFormatAsCodeSnippet(input string) string {
+
+	result, err := FormatAsCodeSnippet(input)
+	if err != nil {
+		log.Debugf("TryToFormatAsCodeSnippet: error occurred when calling FormatAsCodeBlock: %v", err)
+		log.Debug("TryToFormatAsCodeSnippet: returning original string")
+		return input
+	}
+
+	log.Debug("TryToFormatAsCodeSnippet: no errors occurred when calling FormatAsCodeSnippet")
+	return result
+}
 
 // FormatAsCodeBlock accepts an arbitrary string, quoted or not, and calls a
 // helper function which attempts to format as a valid Markdown code block for
