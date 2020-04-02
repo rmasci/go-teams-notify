@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 )
 
 // Even though Microsoft Teams doesn't show the additional newlines,
@@ -160,39 +159,43 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 
 	var codeContentForSubmission string
 
+	// try to prevent "runtime error: slice bounds out of range"
+	formattedJSONStartChar := 0
+	formattedJSONEndChar := len(formattedJSON) - 1
+	if formattedJSONEndChar < 0 {
+		formattedJSONEndChar = 0
+	}
+
 	// handle cases where the formatted JSON string was not wrapped with
 	// double-quotes
-	switch minLength := 2; {
-
-	// Guard against strings of length 1 to prevent out of range panics:
-	// panic: runtime error: slice bounds out of range [1:0]
-	case len(formattedJSON) < minLength:
-		return "", fmt.Errorf(
-			"formattedJSON is invalid length; got %d chars, want at least %d chars",
-			len(formattedJSON),
-			minLength,
-		)
+	switch {
 
 	// if neither start or end character are double-quotes
-	case string(formattedJSON[0]) != `"` && string(formattedJSON[len(formattedJSON)-1]) != `"`:
+	case string(formattedJSON[formattedJSONStartChar]) != `"` && string(formattedJSON[formattedJSONEndChar]) != `"`:
 		codeContentForSubmission = prefix + string(formattedJSON) + suffix
 
 	// if only start character is not a double-quote
-	case string(formattedJSON[0]) != `"`:
+	case string(formattedJSON[formattedJSONStartChar]) != `"`:
 		logger.Println("[WARN]: escapedFormattedJSON is missing leading double-quote")
 		codeContentForSubmission = prefix + string(formattedJSON)
 
 	// if only end character is not a double-quote
-	case string(formattedJSON[len(formattedJSON)-1]) != `"`:
+	case string(formattedJSON[formattedJSONEndChar]) != `"`:
 		logger.Println("[WARN]: escapedFormattedJSON is missing trailing double-quote")
 		codeContentForSubmission = codeContentForSubmission + suffix
 
 	default:
-		codeContentForSubmission = prefix + string(formattedJSON[1:len(formattedJSON)-1]) + suffix
+		codeContentForSubmission = prefix + string(formattedJSON[1:formattedJSONEndChar]) + suffix
 	}
 
 	logger.Printf("DEBUG: ... as-is:\n%s\n\n", string(formattedJSON))
-	logger.Printf("DEBUG: ... without first and last characters: \n%s\n\n", string(formattedJSON[1:len(formattedJSON)-1]))
+
+	// this requires that the formattedJSON be at least two characters long
+	if len(formattedJSON) > 2 {
+		logger.Printf("DEBUG: ... without first and last characters: \n%s\n\n", string(formattedJSON[formattedJSONStartChar+1:formattedJSONEndChar]))
+	}
+	logger.Printf("DEBUG: formattedJSON is less than two chars: \n%s\n\n", string(formattedJSON))
+
 	logger.Printf("DEBUG: codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
 
 	// err should be nil if everything worked as expected
