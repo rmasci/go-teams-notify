@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-
-	"github.com/apex/log"
 )
 
 // Even though Microsoft Teams doesn't show the additional newlines,
@@ -47,12 +45,12 @@ func TryToFormatAsCodeBlock(input string) string {
 
 	result, err := FormatAsCodeBlock(input)
 	if err != nil {
-		log.Debugf("TryToFormatAsCodeBlock: error occurred when calling FormatAsCodeBlock: %v", err)
-		log.Debug("TryToFormatAsCodeBlock: returning original string")
+		logger.Printf("TryToFormatAsCodeBlock: error occurred when calling FormatAsCodeBlock: %v\n", err)
+		logger.Println("TryToFormatAsCodeBlock: returning original string")
 		return input
 	}
 
-	log.Debug("TryToFormatAsCodeBlock: no errors occurred when calling FormatAsCodeBlock")
+	logger.Println("TryToFormatAsCodeBlock: no errors occurred when calling FormatAsCodeBlock")
 	return result
 }
 
@@ -64,12 +62,12 @@ func TryToFormatAsCodeSnippet(input string) string {
 
 	result, err := FormatAsCodeSnippet(input)
 	if err != nil {
-		log.Debugf("TryToFormatAsCodeSnippet: error occurred when calling FormatAsCodeBlock: %v", err)
-		log.Debug("TryToFormatAsCodeSnippet: returning original string")
+		logger.Printf("TryToFormatAsCodeSnippet: error occurred when calling FormatAsCodeBlock: %v\n", err)
+		logger.Println("TryToFormatAsCodeSnippet: returning original string")
 		return input
 	}
 
-	log.Debug("TryToFormatAsCodeSnippet: no errors occurred when calling FormatAsCodeSnippet")
+	logger.Println("TryToFormatAsCodeSnippet: no errors occurred when calling FormatAsCodeSnippet")
 	return result
 }
 
@@ -164,7 +162,16 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 
 	// handle cases where the formatted JSON string was not wrapped with
 	// double-quotes
-	switch {
+	switch minLength := 2; {
+
+	// Guard against strings of length 1 to prevent out of range panics:
+	// panic: runtime error: slice bounds out of range [1:0]
+	case len(formattedJSON) < minLength:
+		return "", fmt.Errorf(
+			"formattedJSON is invalid length; got %d chars, want at least %d chars",
+			len(formattedJSON),
+			minLength,
+		)
 
 	// if neither start or end character are double-quotes
 	case string(formattedJSON[0]) != `"` && string(formattedJSON[len(formattedJSON)-1]) != `"`:
@@ -181,16 +188,6 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 		codeContentForSubmission = codeContentForSubmission + suffix
 
 	default:
-		// Guard against strings of length 1 to prevent out of range panics:
-		// panic: runtime error: slice bounds out of range [1:0]
-		minLength := 2
-		if len(formattedJSON) < minLength {
-			return "", fmt.Errorf(
-				"formattedJSON is invalid length; got %d chars, want at least %d chars",
-				len(formattedJSON),
-				minLength,
-			)
-		}
 		codeContentForSubmission = prefix + string(formattedJSON[1:len(formattedJSON)-1]) + suffix
 	}
 
