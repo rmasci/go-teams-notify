@@ -108,6 +108,10 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 		Name:  key,
 		Value: strings.Join(values, ", "),
 	}
+	// TODO: Explicitly define or use constructor?
+	// fact := NewMessageCardSectionFact()
+	// fact.Name = key
+	// fact.Value = strings.Join(values, ", ")
 
 	mcs.Facts = append(mcs.Facts, fact)
 
@@ -170,6 +174,7 @@ func (mcs *MessageCardSection) AddHeroImageStr(imageURL string, imageTitle strin
 		Image: imageURL,
 		Title: imageTitle,
 	}
+	// TODO: Explicitly define or use constructor?
 	// heroImage := NewMessageCardSectionImage()
 	// heroImage.Image = imageURL
 	// heroImage.Title = imageTitle
