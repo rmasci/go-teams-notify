@@ -171,30 +171,31 @@ func formatAsCode(input string, prefix string, suffix string) (string, error) {
 	switch {
 
 	// if neither start or end character are double-quotes
-	case string(formattedJSON[formattedJSONStartChar]) != `"` && string(formattedJSON[formattedJSONEndChar]) != `"`:
+	case formattedJSON[formattedJSONStartChar] != '"' && formattedJSON[formattedJSONEndChar] != '"':
 		codeContentForSubmission = prefix + string(formattedJSON) + suffix
 
 	// if only start character is not a double-quote
-	case string(formattedJSON[formattedJSONStartChar]) != `"`:
+	case formattedJSON[formattedJSONStartChar] != '"':
 		logger.Println("[WARN]: escapedFormattedJSON is missing leading double-quote")
 		codeContentForSubmission = prefix + string(formattedJSON)
 
 	// if only end character is not a double-quote
-	case string(formattedJSON[formattedJSONEndChar]) != `"`:
+	case formattedJSON[formattedJSONEndChar] != '"':
 		logger.Println("[WARN]: escapedFormattedJSON is missing trailing double-quote")
 		codeContentForSubmission = codeContentForSubmission + suffix
 
 	default:
-		codeContentForSubmission = prefix + string(formattedJSON[1:formattedJSONEndChar]) + suffix
+		codeContentForSubmission = prefix + formattedJSON[1:formattedJSONEndChar] + suffix
 	}
 
-	logger.Printf("DEBUG: ... as-is:\n%s\n\n", string(formattedJSON))
+	logger.Printf("DEBUG: ... as-is:\n%s\n\n", formattedJSON)
 
 	// this requires that the formattedJSON be at least two characters long
 	if len(formattedJSON) > 2 {
-		logger.Printf("DEBUG: ... without first and last characters: \n%s\n\n", string(formattedJSON[formattedJSONStartChar+1:formattedJSONEndChar]))
+		logger.Printf("DEBUG: ... without first and last characters: \n%s\n\n", formattedJSON[formattedJSONStartChar+1:formattedJSONEndChar])
+	} else {
+		logger.Printf("DEBUG: formattedJSON is less than two chars: \n%s\n\n", formattedJSON)
 	}
-	logger.Printf("DEBUG: formattedJSON is less than two chars: \n%s\n\n", string(formattedJSON))
 
 	logger.Printf("DEBUG: codeContentForSubmission: \n%s\n\n", codeContentForSubmission)
 
