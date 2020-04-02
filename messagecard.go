@@ -50,7 +50,10 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
 		default:
 			logger.Println("DEBUG: No cases matched, all fields assumed to be at zero-value, skipping section")
-			continue
+			//continue
+			// we probably need to return an error here so that client code can
+			// handle the situation accordingly
+			return fmt.Errorf("all fields found to be at zero-value, skipping section")
 		}
 
 		logger.Println("DEBUG: section contains at least one non-zero value, adding section")
