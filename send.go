@@ -82,13 +82,13 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
 	// Basic, unformatted JSON
-	//logger.Printf("DEBUG: %+v\n", string(webhookMessageByte))
+	//logger.Printf("Send: %+v\n", string(webhookMessageByte))
 
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, webhookMessageByte, "", "\t"); err != nil {
 		return err
 	}
-	logger.Printf("DEBUG: %v\n", prettyJSON.String())
+	logger.Printf("Send: %v\n", prettyJSON.String())
 
 	// prepare request (error not possible)
 	req, _ := http.NewRequest("POST", webhookURL, webhookMessageBuffer)
@@ -126,7 +126,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	}
 
 	// log the response string
-	logger.Printf("DEBUG: Response string: %v\n", responseString)
+	logger.Printf("Send: Response string: %v\n", responseString)
 
 	return nil
 }
