@@ -65,7 +65,7 @@ func NewClient() (API, error) {
 // Send - will post a notification to MS Teams incomingWebhookURL
 func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 
-	logger.Printf("Received: %#v\n", webhookMessage)
+	logger.Printf("Send: Webhook message received: %#v\n", webhookMessage)
 
 	// validate url
 	if valid, err := IsValidWebhookURL(webhookURL); !valid {
@@ -88,7 +88,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	if err := json.Indent(&prettyJSON, webhookMessageByte, "", "\t"); err != nil {
 		return err
 	}
-	logger.Printf("Send: %v\n", prettyJSON.String())
+	logger.Printf("Send: Payload for Microsoft Teams: \n\n%v\n\n", prettyJSON.String())
 
 	// prepare request (error not possible)
 	req, _ := http.NewRequest("POST", webhookURL, webhookMessageBuffer)
