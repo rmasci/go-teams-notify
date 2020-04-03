@@ -15,13 +15,13 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
 	for _, s := range section {
 
-		logger.Printf("DEBUG: MessageCardSection received: %+v\n", s)
+		logger.Printf("AddSection: MessageCardSection received: %+v\n", s)
 
 		// bail if a completely nil section provided
 		if s == nil {
-			logger.Println("DEBUG: nil MessageCardSection received by AddSection")
-			logger.Println("DEBUG: returning error message which forces rejection of invalid MessageCardSection")
-			return fmt.Errorf("nil MessageCardSection received by AddSection")
+			logger.Println("AddSection: nil MessageCardSection received")
+			logger.Println("AddSection: returning error message which forces rejection of invalid MessageCardSection")
+			return fmt.Errorf("AddSection: nil MessageCardSection received")
 		}
 
 		// Perform validation of all MessageCardSection fields in an effort to
@@ -56,7 +56,7 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 			return fmt.Errorf("all fields found to be at zero-value, skipping section")
 		}
 
-		logger.Println("DEBUG: section contains at least one non-zero value, adding section")
+		logger.Println("AddSection: section contains at least one non-zero value, adding section")
 
 		mc.Sections = append(mc.Sections, s)
 
@@ -72,7 +72,7 @@ func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 
 	for _, f := range fact {
 
-		logger.Printf("DEBUG: MessageCardSectionFact received: %+v\n", f)
+		logger.Printf("AddFact: MessageCardSectionFact received: %+v\n", f)
 
 		if f.Name == "" {
 			return fmt.Errorf("empty Name field received for new fact: %+v", f)
@@ -83,11 +83,11 @@ func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 		}
 	}
 
-	//logger.Printf("DEBUG: Existing sections: %+v\n", mcs.Facts)
-	//logger.Printf("DEBUG: Incoming sections: %+v\n", fact)
-	logger.Println("DEBUG: section fact contains at least one non-zero value, adding section fact")
+	//logger.Printf("AddFact: Existing sections: %+v\n", mcs.Facts)
+	//logger.Printf("AddFact: Incoming sections: %+v\n", fact)
+	logger.Println("AddFact: section fact contains at least one non-zero value, adding section fact")
 	mcs.Facts = append(mcs.Facts, fact...)
-	//logger.Printf("Facts after append() call: %+v\n", mcs.Facts)
+	//logger.Printf("AddFact: Facts after append() call: %+v\n", mcs.Facts)
 
 	return nil
 
@@ -126,21 +126,21 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 // a MessageCard section.
 // func (mcs *MessageCardSection) AddAction(sectionAction ...MessageCardPotentialAction) {
 
-// 	//logger.Printf("DEBUG: Existing section actions: %+v\n", mcs.PotentialAction)
-// 	//logger.Printf("DEBUG: Incoming section actions: %+v\n", sectionAction)
+// 	//logger.Printf("AddAction: Existing section actions: %+v\n", mcs.PotentialAction)
+// 	//logger.Printf("AddAction: Incoming section actions: %+v\n", sectionAction)
 
 // 	// FIXME: No more than four actions are currently supported according to the reference doc.
 // 	mcs.PotentialAction = append(mcs.PotentialAction, sectionAction...)
 
-// 	//logger.Printf("Section actions after append() call: %+v\n", mcs.PotentialAction)
+// 	//logger.Printf("AddAction: Section actions after append() call: %+v\n", mcs.PotentialAction)
 // }
 
 // AddImage adds an image to a MessageCard section. These images are used to
 // provide a photo gallery inside a MessageCard section.
 func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) error {
 
-	//logger.Printf("DEBUG: Existing section images: %+v\n", mcs.Images)
-	//logger.Printf("DEBUG: Incoming section images: %+v\n", sectionImage)
+	//logger.Printf("AddImage: Existing section images: %+v\n", mcs.Images)
+	//logger.Printf("AddImage: Incoming section images: %+v\n", sectionImage)
 
 	for _, img := range sectionImage {
 		if img.Image == "" {
@@ -155,7 +155,7 @@ func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage)
 
 	}
 
-	//logger.Printf("Section images after append() calls: %+v\n", mcs.Images)
+	//logger.Printf("AddImage: Section images after append() calls: %+v\n", mcs.Images)
 
 	return nil
 }
