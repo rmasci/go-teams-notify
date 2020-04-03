@@ -126,7 +126,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	}
 
 	// log the response string
-	logger.Printf("Send: Response string: %v\n", responseString)
+	logger.Printf("Send: Response string from Microsoft Teams API: %v\n", responseString)
 
 	return nil
 }
