@@ -6,6 +6,180 @@ import (
 	"strings"
 )
 
+// MessageCardSectionFact represents a section fact entry that is usually
+// displayed in a two-column key/value format.
+type MessageCardSectionFact struct {
+
+	// Name is the key for an associated value in a key/value pair
+	Name string `json:"name"`
+
+	// Value is the value for an associated key in a key/value pair
+	Value string `json:"value"`
+}
+
+// MessageCardSectionImage represents an image as used by the heroImage and
+// images properties of a section.
+type MessageCardSectionImage struct {
+
+	// Image is the URL to the image.
+	Image string `json:"image"`
+
+	// Title is a short description of the image. Typically, this description
+	// is displayed in a tooltip as the user hovers their mouse over the
+	// image.
+	Title string `json:"title"`
+}
+
+// MessageCardPotentialAction represents an action that a user may take for a
+// received Microsoft Teams message. Actions may be defined for the card
+// as a whole and/or in specifc sections.
+// FIXME: Add doc comments to each field.
+// type MessageCardPotentialAction struct {
+// 	Target  []string `json:"target"`
+// 	Context string   `json:"@context"`
+// 	Type    string   `json:"@type"`
+
+// 	// FIXME: The original conversion had `interface{}` as the type here. The
+// 	// example JSON payload I found had `null` (no quotes) as the value for
+// 	// this field. We may need to change this back to `interface{}` for
+// 	// compatibility reasons.
+// 	// https://stackoverflow.com/questions/31048557/assigning-null-to-json-fields-instead-of-empty-strings
+// 	ID              string `json:"@id"`
+// 	Name            string `json:"name"`
+// 	IsPrimaryAction bool   `json:"isPrimaryAction"`
+// }
+
+// https://golang.org/pkg/encoding/json/
+//
+// The "omitempty" option specifies that the field should be omitted from the
+// encoding if the field has an empty value, defined as false, 0, a nil
+// pointer, a nil interface value, and any empty array, slice, map, or string.
+
+// MessageCardSection represents a section to include in a message card.
+type MessageCardSection struct {
+
+	// Title is the title property of a section. This property  is displayed
+	// in a font that stands out, while not as prominent as the card's title.
+	// It is meant to introduce the section and summarize its content,
+	// similarly to how the card's title property is meant to summarize the
+	// whole card.
+	Title string `json:"title,omitempty"`
+
+	// Text is the section's text property. This property is very similar to
+	// the text property of the card. It can be used for the same purpose.
+	Text string `json:"text,omitempty"`
+
+	// ActivityImage is a property used to display a picture associated with
+	// the subject of a message card. For example, this might be the portrait
+	// of a person who performed an activity that the message card is
+	// associated with.
+	ActivityImage string `json:"activityImage,omitempty"`
+
+	// ActivityTitle is a property used to summarize the activity associated
+	// with a message card.
+	ActivityTitle string `json:"activityTitle,omitempty"`
+
+	// ActivitySubtitle is a property used to show brief, but extended
+	// information about an activity associated with a message card. Examples
+	// include the date and time the associated activity was taken or the
+	// handle of a person associated with the activity.
+	ActivitySubtitle string `json:"activitySubtitle,omitempty"`
+
+	// ActivityText is a property used to provide details about the activity.
+	// For example, if the message card is used to deliver updates about a
+	// topic, then this property would be used to hold the bulk of the content
+	// for the update notification.
+	ActivityText string `json:"activityText,omitempty"`
+
+	// Markdown represents a toggle to enable or disable Markdown formatting.
+	// By default, all text fields in a card and its sections can be formatted
+	// using basic Markdown.
+	Markdown bool `json:"markdown,omitempty"`
+
+	// StartGroup is the section's startGroup property. This property marks
+	// the start of a logical group of information. Typically, sections with
+	// startGroup set to true will be visually separated from previous card
+	// elements.
+	StartGroup bool `json:"startGroup,omitempty"`
+
+	// HeroImage is a property that allows for setting an image as the
+	// centerpiece of a message card. This property can also be used to add a
+	// banner to the message card.
+	// Note: heroImage is not currently supported by Microsoft Teams
+	// https://stackoverflow.com/a/45389789
+	// We use a pointer to this type in order to have the json package
+	// properly omit this field if not explicitly set.
+	// https://github.com/golang/go/issues/11939
+	// https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go
+	// https://stackoverflow.com/questions/33447334/golang-json-marshal-how-to-omit-empty-nested-struct
+	HeroImage *MessageCardSectionImage `json:"heroImage,omitempty"`
+
+	// Facts is a collection of MessageCardSectionFact values. A section entry
+	// usually is displayed in a two-column key/value format.
+	Facts []MessageCardSectionFact `json:"facts,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this
+	// section.
+	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
+
+	// Images is a property that allows for the inclusion of a photo gallery
+	// inside a section.
+	// We use a slice of pointers to this type in order to have the json
+	// package properly omit this field if not explicitly set.
+	// https://github.com/golang/go/issues/11939
+	// https://stackoverflow.com/questions/18088294/how-to-not-marshal-an-empty-struct-into-json-with-go
+	// https://stackoverflow.com/questions/33447334/golang-json-marshal-how-to-omit-empty-nested-struct
+	Images []*MessageCardSectionImage `json:"images,omitempty"`
+}
+
+// https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
+// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
+// https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using
+// https://mholt.github.io/json-to-go/
+// https://messagecardplayground.azurewebsites.net/
+// https://connectplayground.azurewebsites.net/
+// https://github.com/atc0005/bounce/issues/21
+// https://stackoverflow.com/a/45389789
+
+// MessageCard represents a legacy actionable message card used via Office 365
+// or Microsoft Teams connectors.
+type MessageCard struct {
+	// Required; must be set to "MessageCard"
+	Type string `json:"@type"`
+
+	// Required; must be set to "https://schema.org/extensions"
+	Context string `json:"@context"`
+
+	// Summary is required if the card does not contain a text property,
+	// otherwise optional. The summary property is typically displayed in the
+	// list view in Outlook, as a way to quickly determine what the card is
+	// all about. Summary appears to only be used when there are sections defined
+	Summary string `json:"summary,omitempty"`
+
+	// Title is the title property of a card. is meant to be rendered in a
+	// prominent way, at the very top of the card. Use it to introduce the
+	// content of the card in such a way users will immediately know what to
+	// expect.
+	Title string `json:"title,omitempty"`
+
+	// Text is required if the card does not contain a summary property,
+	// otherwise optional. The text property is meant to be displayed in a
+	// normal font below the card's title. Use it to display content, such as
+	// the description of the entity being referenced, or an abstract of a
+	// news article.
+	Text string `json:"text,omitempty"`
+
+	// Specifies a custom brand color for the card. The color will be
+	// displayed in a non-obtrusive manner.
+	ThemeColor string `json:"themeColor,omitempty"`
+
+	// Sections is a collection of sections to include in the card.
+	Sections []*MessageCardSection `json:"sections,omitempty"`
+
+	// PotentialAction is a collection of actions that can be invoked on this card.
+	//PotentialAction []MessageCardPotentialAction `json:"potentialAction,omitempty"`
+}
+
 // AddSection adds one or many additional MessageCardSection values to a
 // MessageCard. Validation is performed to reject invalid values with an error
 // message.
@@ -201,3 +375,74 @@ func (mcs *MessageCardSection) AddHeroImage(heroImage MessageCardSectionImage) e
 	return nil
 
 }
+
+// NewMessageCard creates a new message card with required fields required by
+// the legacy message card format already predefined
+func NewMessageCard() MessageCard {
+
+	// define expected values to meet Office 365 Connector card requirements
+	// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#card-fields
+	// TODO: Move string values to constants list
+	msgCard := MessageCard{
+		Type:    "MessageCard",
+		Context: "https://schema.org/extensions",
+	}
+
+	return msgCard
+}
+
+// NewMessageCardSection creates an empty message card section
+func NewMessageCardSection() *MessageCardSection {
+
+	msgCardSection := MessageCardSection{}
+
+	return &msgCardSection
+
+}
+
+// NewMessageCardSectionFact creates an empty message card section fact
+func NewMessageCardSectionFact() MessageCardSectionFact {
+
+	msgCardSectionFact := MessageCardSectionFact{}
+
+	return msgCardSectionFact
+
+}
+
+// NewMessageCardSectionImage creates an empty image for use with message card
+// section
+func NewMessageCardSectionImage() MessageCardSectionImage {
+
+	msgCardSectionImage := MessageCardSectionImage{}
+
+	return msgCardSectionImage
+
+}
+
+// NewMessageCardPotentialAction creates an empty potential action value. This
+// value may be added or attached to the main message card value OR to a
+// specific message card section.
+// func NewMessageCardPotentialAction() MessageCardPotentialAction {
+
+// 	// Example potentialAction portion of MS Teams JSON payload:
+// 	//
+// 	// "potentialAction": [
+// 	// 	{
+// 	// 		"target": [
+// 	// 			"http://web.example.local:8000/app/search/@go?sid=scheduler_admin_search_W2_at_14232356_132"
+// 	// 		],
+// 	// 		"@context": "http://schema.org",
+// 	// 		"@type": "ViewAction",
+// 	// 		"@id": null,
+// 	// 		"name": "View full Splunk report",
+// 	// 		"isPrimaryAction": true
+// 	// 	}
+// 	// ]
+
+// 	msgCardPotentialAction := MessageCardPotentialAction{}
+
+// 	// prefill required fields
+// 	msgCardPotentialAction.Context = "http://schema.org"
+
+// 	return msgCardPotentialAction
+// }
