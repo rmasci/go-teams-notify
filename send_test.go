@@ -10,14 +10,14 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	client, err := NewClient()
-	assert.IsType(t, nil, err)
+	client := NewClient()
 	assert.IsType(t, &teamsClient{}, client)
 }
 
 func TestTeamsClientSend(t *testing.T) {
 	// THX@Hassansin ... http://hassansin.github.io/Unit-Testing-http-client-in-Go
-	emptyMessage := NewMessageCard()
+	simpleMsgCard := NewMessageCard()
+	simpleMsgCard.Text = "Hello World"
 	var tests = []struct {
 		reqURL    string
 		reqMsg    MessageCard
@@ -28,7 +28,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid webhookURL - url.Parse error
 		{
 			reqURL:    "ht\ttp://",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 0,
 			resError:  nil,
 			error:     &url.Error{},
@@ -36,7 +36,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid webhookURL - missing prefix in webhook URL
 		{
 			reqURL:    "",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 0,
 			resError:  nil,
 			error:     errors.New(""),
@@ -44,7 +44,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid httpClient.Do call
 		{
 			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 200,
 			resError:  errors.New("pling"),
 			error:     &url.Error{},
@@ -52,7 +52,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid httpClient.Do call
 		{
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 200,
 			resError:  errors.New("pling"),
 			error:     &url.Error{},
@@ -60,7 +60,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid response status code
 		{
 			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 400,
 			resError:  nil,
 			error:     errors.New(""),
@@ -68,7 +68,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// invalid response status code
 		{
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 400,
 			resError:  nil,
 			error:     errors.New(""),
@@ -76,7 +76,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// valid
 		{
 			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 200,
 			resError:  nil,
 			error:     nil,
@@ -84,7 +84,7 @@ func TestTeamsClientSend(t *testing.T) {
 		// valid
 		{
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    emptyMessage,
+			reqMsg:    simpleMsgCard,
 			resStatus: 200,
 			resError:  nil,
 			error:     nil,
@@ -96,8 +96,6 @@ func TestTeamsClientSend(t *testing.T) {
 			assert.Equal(t, req.URL.String(), test.reqURL)
 			return &http.Response{
 				StatusCode: test.resStatus,
-				// Send response to be tested
-				//Body: ioutil.NopCloser(bytes.NewBufferString(`OK`)),
 				// Must be set to non-nil value or it panics
 				Header: make(http.Header),
 			}, test.resError
@@ -119,7 +117,7 @@ func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 	return f(req)
 }
 
-//NewTestClient returns *http.API with Transport replaced to avoid making real calls
+// NewTestClient returns *http.API with Transport replaced to avoid making real calls
 func NewTestClient(fn RoundTripFunc) *http.Client {
 	return &http.Client{
 		Transport: RoundTripFunc(fn),
