@@ -60,7 +60,7 @@ func NewClient() API {
 	return &client
 }
 
-// Send - will post a notification to MS Teams incomingWebhookURL
+// Send - will post a notification to MS Teams webhook URL
 func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 
 	logger.Printf("Send: Webhook message received: %#v\n", webhookMessage)
