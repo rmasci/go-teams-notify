@@ -58,7 +58,7 @@ type MessageCardSectionImage struct {
 // MessageCardSection represents a section to include in a message card.
 type MessageCardSection struct {
 
-	// Title is the title property of a section. This property  is displayed
+	// Title is the title property of a section. This property is displayed
 	// in a font that stands out, while not as prominent as the card's title.
 	// It is meant to introduce the section and summarize its content,
 	// similarly to how the card's title property is meant to summarize the
@@ -132,15 +132,6 @@ type MessageCardSection struct {
 	Images []*MessageCardSectionImage `json:"images,omitempty"`
 }
 
-// https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors
-// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference
-// https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using
-// https://mholt.github.io/json-to-go/
-// https://messagecardplayground.azurewebsites.net/
-// https://connectplayground.azurewebsites.net/
-// https://github.com/atc0005/bounce/issues/21
-// https://stackoverflow.com/a/45389789
-
 // MessageCard represents a legacy actionable message card used via Office 365
 // or Microsoft Teams connectors.
 type MessageCard struct {
@@ -184,18 +175,13 @@ type MessageCard struct {
 // MessageCard. Validation is performed to reject invalid values with an error
 // message.
 func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
-
-	var err error
-
 	for _, s := range section {
 
 		logger.Printf("AddSection: MessageCardSection received: %+v\n", s)
 
 		// bail if a completely nil section provided
 		if s == nil {
-			logger.Println("AddSection: nil MessageCardSection received")
-			logger.Println("AddSection: returning error message which forces rejection of invalid MessageCardSection")
-			return fmt.Errorf("AddSection: nil MessageCardSection received")
+			return fmt.Errorf("func AddSection: nil MessageCardSection received")
 		}
 
 		// Perform validation of all MessageCardSection fields in an effort to
@@ -207,9 +193,8 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		// field in the output JSON.
 		// See also https://github.com/golang/go/issues/11939
 		switch {
-
-		// If any of these cases trigger, add the section. This is
-		// accomplished by not using the `default` case section.
+		// If any of these cases trigger, skip over the `default` case
+		// statement and add the section.
 		case s.Images != nil:
 		case s.Facts != nil:
 		case s.HeroImage != nil:
@@ -224,26 +209,19 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 
 		default:
 			logger.Println("AddSection: No cases matched, all fields assumed to be at zero-value, skipping section")
-			//continue
-			// we probably need to return an error here so that client code can
-			// handle the situation accordingly
 			return fmt.Errorf("all fields found to be at zero-value, skipping section")
 		}
 
 		logger.Println("AddSection: section contains at least one non-zero value, adding section")
-
 		mc.Sections = append(mc.Sections, s)
-
 	}
 
-	return err
-
+	return nil
 }
 
 // AddFact adds one or many additional MessageCardSectionFact values to a
 // MessageCardSection
 func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
-
 	for _, f := range fact {
 
 		logger.Printf("AddFact: MessageCardSectionFact received: %+v\n", f)
@@ -257,20 +235,15 @@ func (mcs *MessageCardSection) AddFact(fact ...MessageCardSectionFact) error {
 		}
 	}
 
-	//logger.Printf("AddFact: Existing sections: %+v\n", mcs.Facts)
-	//logger.Printf("AddFact: Incoming sections: %+v\n", fact)
 	logger.Println("AddFact: section fact contains at least one non-zero value, adding section fact")
 	mcs.Facts = append(mcs.Facts, fact...)
-	//logger.Printf("AddFact: Facts after append() call: %+v\n", mcs.Facts)
 
 	return nil
-
 }
 
 // AddFactFromKeyValue accepts a key and slice of values and converts them to
 // MessageCardSectionFact values
 func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string) error {
-
 	// validate arguments
 
 	if key == "" {
@@ -331,7 +304,6 @@ func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage)
 // arguments. This image is used as the centerpiece or banner of a message
 // card.
 func (mcs *MessageCardSection) AddHeroImageStr(imageURL string, imageTitle string) error {
-
 	if imageURL == "" {
 		return fmt.Errorf("cannot add empty hero image URL")
 	}
@@ -353,14 +325,12 @@ func (mcs *MessageCardSection) AddHeroImageStr(imageURL string, imageTitle strin
 
 	// our validation checks didn't find any problems
 	return nil
-
 }
 
 // AddHeroImage adds a Hero Image to a MessageCard section using a
 // MessageCardSectionImage argument. This image is used as the centerpiece or
 // banner of a message card.
 func (mcs *MessageCardSection) AddHeroImage(heroImage MessageCardSectionImage) error {
-
 	if heroImage.Image == "" {
 		return fmt.Errorf("cannot add empty hero image URL")
 	}
@@ -373,16 +343,13 @@ func (mcs *MessageCardSection) AddHeroImage(heroImage MessageCardSectionImage) e
 
 	// our validation checks didn't find any problems
 	return nil
-
 }
 
-// NewMessageCard creates a new message card with required fields required by
-// the legacy message card format already predefined
+// NewMessageCard creates a new message card with fields required by the
+// legacy message card format already predefined
 func NewMessageCard() MessageCard {
-
 	// define expected values to meet Office 365 Connector card requirements
 	// https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#card-fields
-	// TODO: Move string values to constants list
 	msgCard := MessageCard{
 		Type:    "MessageCard",
 		Context: "https://schema.org/extensions",
@@ -393,30 +360,21 @@ func NewMessageCard() MessageCard {
 
 // NewMessageCardSection creates an empty message card section
 func NewMessageCardSection() *MessageCardSection {
-
 	msgCardSection := MessageCardSection{}
-
 	return &msgCardSection
-
 }
 
 // NewMessageCardSectionFact creates an empty message card section fact
 func NewMessageCardSectionFact() MessageCardSectionFact {
-
 	msgCardSectionFact := MessageCardSectionFact{}
-
 	return msgCardSectionFact
-
 }
 
 // NewMessageCardSectionImage creates an empty image for use with message card
 // section
 func NewMessageCardSectionImage() MessageCardSectionImage {
-
 	msgCardSectionImage := MessageCardSectionImage{}
-
 	return msgCardSectionImage
-
 }
 
 // NewMessageCardPotentialAction creates an empty potential action value. This
