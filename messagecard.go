@@ -213,8 +213,8 @@ func (mc *MessageCard) AddSection(section ...*MessageCardSection) error {
 		case s.Images != nil:
 		case s.Facts != nil:
 		case s.HeroImage != nil:
-		case s.StartGroup != false:
-		case s.Markdown != false:
+		case s.StartGroup:
+		case s.Markdown:
 		case s.ActivityText != "":
 		case s.ActivitySubtitle != "":
 		case s.ActivityTitle != "":
