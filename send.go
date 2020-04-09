@@ -84,7 +84,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	logger.Printf("Send: Payload for Microsoft Teams: \n\n%v\n\n", prettyJSON.String())
 
 	// prepare request (error not possible)
-	req, _ := http.NewRequest("POST", webhookURL, webhookMessageBuffer)
+	req, _ := http.NewRequest(http.MethodPost, webhookURL, webhookMessageBuffer)
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 
 	// do the request
