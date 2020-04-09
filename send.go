@@ -51,15 +51,13 @@ func DisableLogging() {
 }
 
 // NewClient - create a brand new client for MS Teams notify
-// FIXME: Upstream v2 removed error return code here
-// TODO: Look at other changes made to v2 and merge
-func NewClient() (API, error) {
+func NewClient() API {
 	client := teamsClient{
 		httpClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
 	}
-	return &client, nil
+	return &client
 }
 
 // Send - will post a notification to MS Teams incomingWebhookURL
