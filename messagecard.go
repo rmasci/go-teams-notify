@@ -138,24 +138,17 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 // AddImage adds an image to a MessageCard section. These images are used to
 // provide a photo gallery inside a MessageCard section.
 func (mcs *MessageCardSection) AddImage(sectionImage ...MessageCardSectionImage) error {
-
-	//logger.Printf("AddImage: Existing section images: %+v\n", mcs.Images)
-	//logger.Printf("AddImage: Incoming section images: %+v\n", sectionImage)
-
-	for _, img := range sectionImage {
-		if img.Image == "" {
+	for i := range sectionImage {
+		if sectionImage[i].Image == "" {
 			return fmt.Errorf("cannot add empty image URL")
 		}
 
-		if img.Title == "" {
+		if sectionImage[i].Title == "" {
 			return fmt.Errorf("cannot add empty image title")
 		}
 
-		mcs.Images = append(mcs.Images, &img)
-
+		mcs.Images = append(mcs.Images, &sectionImage[i])
 	}
-
-	//logger.Printf("AddImage: Section images after append() calls: %+v\n", mcs.Images)
 
 	return nil
 }
