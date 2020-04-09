@@ -67,13 +67,8 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 
 	logger.Printf("Send: Webhook message received: %#v\n", webhookMessage)
 
-	// validate url
-	if valid, err := IsValidWebhookURL(webhookURL); !valid {
-		return err
-	}
-
-	// validate message
-	if valid, err := IsValidMessageCard(webhookMessage); !valid {
+	// Validate input data
+	if valid, err := IsValidInput(webhookMessage, webhookURL); !valid {
 		return err
 	}
 
@@ -133,6 +128,23 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 
 // helper --------------------------------------------------------------------------------------------------------------
 
+// IsValidInput is a validation "wrapper" function. This function is intended
+// to run current validation checks and offer easy extensibility for future
+// validation requirements.
+func IsValidInput(webhookMessage MessageCard, webhookURL string) (bool, error) {
+	// validate url
+	if valid, err := IsValidWebhookURL(webhookURL); !valid {
+		return false, err
+	}
+
+	// validate message
+	if valid, err := IsValidMessageCard(webhookMessage); !valid {
+		return false, err
+	}
+
+	return true, nil
+}
+
 // IsValidWebhookURL performs validation checks on the webhook URL used to
 // submit messages to Microsoft Teams.
 func IsValidWebhookURL(webhookURL string) (bool, error) {
@@ -155,7 +167,6 @@ func IsValidWebhookURL(webhookURL string) (bool, error) {
 // IsValidMessageCard performs validation/checks for known issues with
 // MessardCard values.
 func IsValidMessageCard(webhookMessage MessageCard) (bool, error) {
-
 	if (webhookMessage.Text == "") && (webhookMessage.Summary == "") {
 		// This scenario results in:
 		// 400 Bad Request
@@ -164,5 +175,4 @@ func IsValidMessageCard(webhookMessage MessageCard) (bool, error) {
 	}
 
 	return true, nil
-
 }
