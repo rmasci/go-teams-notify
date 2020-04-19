@@ -132,6 +132,11 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 
 	// do the request
 	res, err := c.httpClient.Do(req)
+
+	if ctx.Err() != nil {
+		logger.Println("Context has expired after Do(req):", time.Now().Format("15:04:05"))
+	}
+
 	if err != nil {
 		logger.Println(err)
 		return err
