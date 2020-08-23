@@ -1,4 +1,4 @@
-module github.com/dasrick/go-teams-notify/v2
+module github.com/atc0005/go-teams-notify/v2
 
 go 1.14
 
