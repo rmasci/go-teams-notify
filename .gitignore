@@ -11,5 +11,6 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# my stuff
-vendor
+# refs GH-6, GH-15
+# Allow vendored files to be included in this repo
+#vendor
