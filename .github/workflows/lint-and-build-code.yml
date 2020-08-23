@@ -32,7 +32,7 @@ jobs:
           # Remove the copy of the config file bundled with the repo/code so
           # that the configuration provided by the atc0005/go-ci project is
           # used instead
-          rm -vf .golangci.yml
+          rm -vf .golangci.yaml
 
       - name: Run golangci-lint using container-provided config file settings
         run: golangci-lint run -v
