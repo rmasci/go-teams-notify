@@ -1,43 +1,108 @@
-LIST_ALL := $(shell go list ./... | grep -v /vendor/)
+# Copyright 2020 Enrico Hoffmann
+# Copyright 2020 Adam Chalkley
+#
+# https://github.com/atc0005/go-teams-notify
+#
+# Licensed under the MIT License. See LICENSE file in the project root for
+# full license information.
 
-# Force using Go Modules and always read the dependencies from
-# the `vendor` folder.
-export GO111MODULE = on
-#export GOFLAGS = -mod=vendor
+# REFERENCES
+#
+# https://github.com/golangci/golangci-lint#install
+# https://github.com/golangci/golangci-lint/releases/latest
 
-all: lint test
+SHELL = /bin/bash
 
-.PHONY: install
-install: ## Install the dependencies
-	@go mod vendor
+BUILDCMD				=	go build -mod=vendor ./...
+GOCLEANCMD				=	go clean -mod=vendor ./...
+GITCLEANCMD				= 	git clean -xfd
+CHECKSUMCMD				=	sha256sum -b
 
-.PHONY: update
-update: ## Update the dependencies
-	@go mod tidy
+.DEFAULT_GOAL := help
 
-.PHONY: clean
-clean: ## Remove binaries and ZIP files based on directory `./cmd/`
-	@rm -rf "$(go env GOCACHE)"
-	@rm -f coverage.out
+  ##########################################################################
+  # Targets will not work properly if a file with the same name is ever
+  # created in this directory. We explicitly declare our targets to be phony
+  # by making them a prerequisite of the special target .PHONY
+  ##########################################################################
 
-.PHONY: lint
-lint: ## Lint all files (via golangci-lint)
-	@go fmt ${LIST_ALL}
+.PHONY: help
+## help: prints this help message
+help:
+	@echo "Usage:"
+	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
+
+.PHONY: lintinstall
+## lintinstall: install common linting tools
+# https://github.com/golang/go/issues/30515#issuecomment-582044819
+lintinstall:
+	@echo "Installing linting tools"
+
+	@export PATH="${PATH}:$(go env GOPATH)/bin"
+
+	@echo "Explicitly enabling Go modules mode per command"
+	(cd; GO111MODULE="on" go get honnef.co/go/tools/cmd/staticcheck)
+
+	@echo Installing latest stable golangci-lint version per official installation script ...
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin
+	golangci-lint --version
+
+	@echo "Finished updating linting tools"
+
+.PHONY: linting
+## linting: runs common linting checks
+linting:
+	@echo "Running linting tools ..."
+
+	@echo "Running go vet ..."
+	@go vet -mod=vendor $(shell go list -mod=vendor ./... | grep -v /vendor/)
+
+	@echo "Running golangci-lint ..."
 	@golangci-lint run
 
-.PHONY: test
-test: clean ## Run unit tests (incl. race and coverprofile)
-	@go test -race -cover -short -timeout=90s -coverprofile=coverage.out ${LIST_ALL}
+	@echo "Running staticcheck ..."
+	@staticcheck $(shell go list -mod=vendor ./... | grep -v /vendor/)
 
-.PHONY: coverage
-coverage: test ## Generate coverage report
-	@go tool cover -func coverage.out
+	@echo "Finished running linting checks"
 
-.PHONY: report
-report: coverage ## Open the coverage report in browser
-	@go tool cover -html=coverage.out
+.PHONY: gotests
+## gotests: runs go test recursively, verbosely
+gotests:
+	@echo "Running go tests ..."
+	@go test -mod=vendor ./...
+	@echo "Finished running go tests"
 
-# ----------------------------------------------------------------------------------------------------------------------
+.PHONY: goclean
+## goclean: removes local build artifacts, temporary files, etc
+goclean:
+	@echo "Removing object files and cached files ..."
+	@$(GOCLEANCMD)
 
-help: ## Display this help screen
-	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+.PHONY: clean
+## clean: alias for goclean
+clean: goclean
+
+.PHONY: gitclean
+## gitclean: WARNING - recursively cleans working tree by removing non-versioned files
+gitclean:
+	@echo "Removing non-versioned files ..."
+	@$(GITCLEANCMD)
+
+.PHONY: pristine
+## pristine: run goclean and gitclean to remove local changes
+pristine: goclean gitclean
+
+.PHONY: all
+# https://stackoverflow.com/questions/3267145/makefile-execute-another-target
+## all: run all applicable build steps
+all: clean build
+	@echo "Completed build process ..."
+
+.PHONY: build
+## build: ensure that packages build
+build:
+	@echo "Building packages ..."
+
+	$(BUILDCMD)
+
+	@echo "Completed build tasks"
