@@ -90,7 +90,7 @@ func TestTeamsClientSend(t *testing.T) {
 			error:     nil,
 		},
 	}
-	for _, test := range tests {
+	for idx, test := range tests {
 		client := NewTestClient(func(req *http.Request) (*http.Response, error) {
 			// Test request parameters
 			assert.Equal(t, req.URL.String(), test.reqURL)
@@ -103,7 +103,46 @@ func TestTeamsClientSend(t *testing.T) {
 		c := &teamsClient{httpClient: client}
 
 		err := c.Send(test.reqURL, test.reqMsg)
-		assert.IsType(t, test.error, err)
+
+		// BUG: This does not handle comparing wrapped errors (GH-23).
+		// assert.IsType(t, test.error, err)
+
+		// FIX: Current master branch of stretchr/testing provides
+		// assert.ErrorAs(), but this isn't officially available until v1.7.x.
+		//
+		// Note: This provides a wrapper around Go 1.13+ stdlib error wrapping
+		// functionality.
+		//
+		// if err != nil {
+		// 	assert.ErrorAs(t, err, &test.error)
+		// }
+
+		// FIX: Use Go 1.13 stdlib errors.As() as a replacement for
+		// assert.IsType() in order to provide a type assertion of wrapped
+		// errors to table test errors.
+		if err != nil {
+
+			// FIXME: This won't work if the test.reqURL is well-formed, but
+			// does not contain one of the two known valid prefixes.
+			if !errors.As(err, &test.error) {
+				t.Fatalf(
+					"FAIL: test %d; got %T, want %T",
+					idx,
+					errors.Unwrap(err),
+					test.error,
+				)
+			} else {
+				t.Logf(
+					"OK: test %d; test.error is of type %T, err is of type %T",
+					idx,
+					test.error,
+					err,
+				)
+			}
+		} else {
+			t.Logf("OK: test %d; no error", idx)
+		}
+
 	}
 }
 

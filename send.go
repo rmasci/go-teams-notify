@@ -93,7 +93,7 @@ func IsValidWebhookURL(webhookURL string) (bool, error) {
 		u, err := url.Parse(webhookURL)
 		if err != nil {
 			return false, fmt.Errorf(
-				"unable to parse webhook URL %q: %v",
+				"unable to parse webhook URL %q: %w",
 				webhookURL,
 				err,
 			)
