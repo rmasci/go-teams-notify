@@ -14,8 +14,43 @@ A package to send messages to Microsoft Teams (channels)
 <!-- omit in toc -->
 ## Table of contents
 
+- [Project home](#project-home)
+- [Overview](#overview)
+- [Features](#features)
+- [Changelog](#changelog)
 - [Usage](#usage)
 - [References](#references)
+
+## Project home
+
+See [our GitHub repo](https://github.com/atc0005/ntpt) for the latest
+code, to file an issue or submit improvements for review and potential
+inclusion into the project.
+
+## Overview
+
+Send simple or complex messages to a Microsoft Teams channel.
+
+Simple messages can be composed of only a title and a text body with complex
+messages supporting multiple sections, key/value pairs (aka, `Facts`) and/or
+externally hosted images.
+
+## Features
+
+- Generate simple or complex messages
+  - simple messages consist of only a title and a text body (one or more
+    strings)
+  - complex messages consist of one or more sections, key/value pairs (aka,
+    `Facts`) and/or externally hosted images. or images (hosted externally)
+- Submit messages to Microsoft Teams
+
+## Changelog
+
+See the [`CHANGELOG.md`](CHANGELOG.md) file for the changes associated with
+each release of this application. Changes that have been merged to `master`,
+but not yet an official release may also be noted in the file under the
+`Unreleased` section. A helpful link to the Git commit history since the last
+official release is also provided for further review.
 
 ## Usage
 
@@ -63,13 +98,19 @@ func sendTheMessage() error {
 
 ## References
 
-- MS Teams - adaptive cards
+- Microsoft Teams
+  - MS Teams - adaptive cards
   ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/adaptive-card),
   [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/adaptive-card))
-- MS Teams - send via connectors
+  - MS Teams - send via connectors
   ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/send-via-connectors),
   [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors))
-- [adaptivecards.io](https://adaptivecards.io/designer)
+  - [adaptivecards.io](https://adaptivecards.io/designer)
+
+- Related projects
+  - <https://github.com/atc0005/send2teams>
+  - <https://github.com/atc0005/bounce>
+  - <https://github.com/atc0005/brick>
 
 [githubtag-image]: https://img.shields.io/github/release/atc0005/go-teams-notify.svg?style=flat
 [githubtag-url]: https://github.com/atc0005/go-teams-notify
