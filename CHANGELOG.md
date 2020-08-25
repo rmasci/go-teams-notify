@@ -24,14 +24,53 @@ The following types of changes will be recorded in this file:
 
 ## [Unreleased]
 
+- placeholder
+
+## [v2.1.1] - 2020-08-25
+
 ### Added
 
+- README
+  - Add badges for GitHub Actions Workflows
+  - Add release badge for latest project release
+- Add CHANGELOG file
+- Add GoDoc package-level documentation
 - Extend webhook validation error handling
+- Add Docker-based GitHub Actions Workflows
+- Enable Dependabot updates
+- Add Markdownlint config file
+
+### Changed
+
+- README
+  - Replace badge for latest tag with latest release
+  - Update GoDoc badge to reference this fork
+  - Update license badge to reference this fork
+  - Add new sections common to other projects that I maintain
+    - table of contents
+    - overview
+    - changelog
+    - references
+    - features
+- Vendor dependencies
+- Update license to add @atc0005 (new) in addition to @dasrick (existing)
+- Update go.mod to replace upstream with this fork
+- Rename golangci-lint config file to match officially supported name
+- Remove files no longer used by this fork
+  - Travis CI configuration
+  - editorconfig file (and settings)
+- Add license header to source files
+  - combined copyright statement for existing files
+  - single copyright statement for new files
 
 ### Fixed
 
 - Add missing Facts assignment in MessageCardSection
 - scopelint: Fix improper range loop var reference
+- Fix misc linting issues with README
+- Test failure from previous upstream pull request submissions
+  - `Object expected to be of type *url.Error, but was *errors.errorString`
+- Misc linting issues with primary and test files
 
 ## [v2.1.0] - 2020-04-08
 
