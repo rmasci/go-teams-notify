@@ -207,7 +207,8 @@ The following types of changes will be recorded in this file:
 
 - add initial functionality of sending messages to MS Teams channel
 
-[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.1.1...HEAD
+[v2.1.1]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.1
 [v2.1.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.0.0
 [v1.3.1]: https://github.com/atc0005/go-teams-notify/releases/tag/v1.3.1
