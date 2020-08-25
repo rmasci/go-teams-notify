@@ -91,6 +91,9 @@ func TestTeamsClientSend(t *testing.T) {
 		},
 	}
 	for idx, test := range tests {
+		// Create range scoped var for use within closure
+		test := test
+
 		client := NewTestClient(func(req *http.Request) (*http.Response, error) {
 			// Test request parameters
 			assert.Equal(t, req.URL.String(), test.reqURL)
@@ -121,7 +124,6 @@ func TestTeamsClientSend(t *testing.T) {
 		// assert.IsType() in order to provide a type assertion of wrapped
 		// errors to table test errors.
 		if err != nil {
-
 			// FIXME: This won't work if the test.reqURL is well-formed, but
 			// does not contain one of the two known valid prefixes.
 			if !errors.As(err, &test.error) {
@@ -142,7 +144,6 @@ func TestTeamsClientSend(t *testing.T) {
 		} else {
 			t.Logf("OK: test %d; no error", idx)
 		}
-
 	}
 }
 
@@ -159,6 +160,6 @@ func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 // NewTestClient returns *http.API with Transport replaced to avoid making real calls
 func NewTestClient(fn RoundTripFunc) *http.Client {
 	return &http.Client{
-		Transport: RoundTripFunc(fn),
+		Transport: fn,
 	}
 }
