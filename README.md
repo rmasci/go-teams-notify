@@ -3,7 +3,7 @@
 
 A package to send messages to Microsoft Teams (channels)
 
-[![Github Tag][githubtag-image]][githubtag-url]
+[![Latest release][githubtag-image]][githubtag-url]
 [![GoDoc][godoc-image]][godoc-url]
 [![License][license-image]][license-url]
 [![Validate Codebase](https://github.com/atc0005/go-teams-notify/workflows/Validate%20Codebase/badge.svg)](https://github.com/atc0005/go-teams-notify/actions?query=workflow%3A%22Validate+Codebase%22)
@@ -63,11 +63,15 @@ func sendTheMessage() error {
 
 ## References
 
-- [MS Teams - adaptive cards](https://docs.microsoft.com/de-de/outlook/actionable-messages/adaptive-card)
-- [MS Teams - send via connectors](https://docs.microsoft.com/de-de/outlook/actionable-messages/send-via-connectors)
+- MS Teams - adaptive cards
+  ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/adaptive-card),
+  [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/adaptive-card))
+- MS Teams - send via connectors
+  ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/send-via-connectors),
+  [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors))
 - [adaptivecards.io](https://adaptivecards.io/designer)
 
-[githubtag-image]: https://img.shields.io/github/tag/atc0005/go-teams-notify.svg?style=flat
+[githubtag-image]: https://img.shields.io/github/release/atc0005/go-teams-notify.svg?style=flat
 [githubtag-url]: https://github.com/atc0005/go-teams-notify
 
 [godoc-image]: https://godoc.org/github.com/atc0005/go-teams-notify?status.svg
