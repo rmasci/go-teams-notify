@@ -9,7 +9,9 @@
 package goteamsnotify
 
 import (
+	"bytes"
 	"errors"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"testing"
@@ -29,15 +31,17 @@ func TestTeamsClientSend(t *testing.T) {
 	var tests = []struct {
 		reqURL    string
 		reqMsg    MessageCard
-		resStatus int   // httpClient response status
-		resError  error // httpClient error
-		error     error // method error
+		resStatus int    // httpClient response status
+		resBody   string // httpClient response body text
+		resError  error  // httpClient error
+		error     error  // method error
 	}{
 		// invalid webhookURL - url.Parse error
 		{
 			reqURL:    "ht\ttp://",
 			reqMsg:    simpleMsgCard,
 			resStatus: 0,
+			resBody:   "invalid",
 			resError:  nil,
 			error:     &url.Error{},
 		},
@@ -46,6 +50,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "",
 			reqMsg:    simpleMsgCard,
 			resStatus: 0,
+			resBody:   "invalid",
 			resError:  nil,
 			error:     errors.New(""),
 		},
@@ -54,6 +59,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 200,
+			resBody:   http.StatusText(http.StatusOK),
 			resError:  errors.New("pling"),
 			error:     &url.Error{},
 		},
@@ -62,6 +68,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 200,
+			resBody:   http.StatusText(http.StatusOK),
 			resError:  errors.New("pling"),
 			error:     &url.Error{},
 		},
@@ -70,6 +77,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 400,
+			resBody:   http.StatusText(http.StatusBadRequest),
 			resError:  nil,
 			error:     errors.New(""),
 		},
@@ -78,6 +86,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 400,
+			resBody:   http.StatusText(http.StatusBadRequest),
 			resError:  nil,
 			error:     errors.New(""),
 		},
@@ -86,6 +95,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 200,
+			resBody:   http.StatusText(http.StatusOK),
 			resError:  nil,
 			error:     nil,
 		},
@@ -94,6 +104,7 @@ func TestTeamsClientSend(t *testing.T) {
 			reqURL:    "https://outlook.office365.com/webhook/xxx",
 			reqMsg:    simpleMsgCard,
 			resStatus: 200,
+			resBody:   http.StatusText(http.StatusOK),
 			resError:  nil,
 			error:     nil,
 		},
@@ -107,6 +118,10 @@ func TestTeamsClientSend(t *testing.T) {
 			assert.Equal(t, req.URL.String(), test.reqURL)
 			return &http.Response{
 				StatusCode: test.resStatus,
+
+				// Send response to be tested
+				Body: ioutil.NopCloser(bytes.NewBufferString(test.resBody)),
+
 				// Must be set to non-nil value or it panics
 				Header: make(http.Header),
 			}, test.resError
