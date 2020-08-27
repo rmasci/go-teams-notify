@@ -13,17 +13,10 @@ import (
 	"net/http"
 	"net/url"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-func TestNewClient(t *testing.T) {
-	client := NewClient()
-	assert.IsType(t, &teamsClient{}, client)
-}
-
+// http://hassansin.github.io/Unit-Testing-http-client-in-Go
 func TestTeamsClientSend(t *testing.T) {
-	// THX@Hassansin ... http://hassansin.github.io/Unit-Testing-http-client-in-Go
 	simpleMsgCard := NewMessageCard()
 	simpleMsgCard.Text = "Hello World"
 	var tests = []struct {
@@ -73,40 +66,20 @@ func TestTeamsClientSend(t *testing.T) {
 			resError:  nil,
 			error:     errors.New(""),
 		},
-		// invalid response status code
-		{
-			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 400,
-			resError:  nil,
-			error:     errors.New(""),
-		},
-		// valid
-		{
-			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resError:  nil,
-			error:     nil,
-		},
-		// valid
-		{
-			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resError:  nil,
-			error:     nil,
-		},
 	}
 	for idx, test := range tests {
 		// Create range scoped var for use within closure
 		test := test
 
 		client := NewTestClient(func(req *http.Request) (*http.Response, error) {
-			// Test request parameters
-			assert.Equal(t, req.URL.String(), test.reqURL)
 			return &http.Response{
 				StatusCode: test.resStatus,
+
+				// NOTE: Intentionally NOT setting the Body field as a test
+				// case between Go 1.14.x and Go 15.
+				// https://github.com/atc0005/go-teams-notify/pull/43
+				//Body:       ioutil.NopCloser(bytes.NewBufferString(`OK`)),
+
 				// Must be set to non-nil value or it panics
 				Header: make(http.Header),
 			}, test.resError
@@ -115,25 +88,7 @@ func TestTeamsClientSend(t *testing.T) {
 
 		err := c.Send(test.reqURL, test.reqMsg)
 
-		// BUG: This does not handle comparing wrapped errors (GH-23).
-		// assert.IsType(t, test.error, err)
-
-		// FIX: Current master branch of stretchr/testing provides
-		// assert.ErrorAs(), but this isn't officially available until v1.7.x.
-		//
-		// Note: This provides a wrapper around Go 1.13+ stdlib error wrapping
-		// functionality.
-		//
-		// if err != nil {
-		// 	assert.ErrorAs(t, err, &test.error)
-		// }
-
-		// FIX: Use Go 1.13 stdlib errors.As() as a replacement for
-		// assert.IsType() in order to provide a type assertion of wrapped
-		// errors to table test errors.
 		if err != nil {
-			// FIXME: This won't work if the test.reqURL is well-formed, but
-			// does not contain one of the two known valid prefixes.
 			if !errors.As(err, &test.error) {
 				t.Fatalf(
 					"FAIL: test %d; got %T, want %T",
@@ -150,17 +105,13 @@ func TestTeamsClientSend(t *testing.T) {
 				)
 			}
 		} else {
-			t.Logf("OK: test %d; no error", idx)
+			t.Logf("OK: test %d; no error received", idx)
 		}
 	}
 }
 
-// helper for testing --------------------------------------------------------------------------------------------------
-
-// RoundTripFunc .
 type RoundTripFunc func(req *http.Request) (*http.Response, error)
 
-// RoundTrip .
 func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 	return f(req)
 }
