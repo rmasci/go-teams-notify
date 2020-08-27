@@ -10,6 +10,7 @@ package goteamsnotify
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,9 +27,14 @@ const (
 	WebhookURLOffice365Prefix = "https://outlook.office365.com"
 )
 
+// DefaultWebhookSendTimeout specifies how long the message operation may take
+// before it times out and is cancelled.
+const DefaultWebhookSendTimeout = 5 * time.Second
+
 // API - interface of MS Teams notify
 type API interface {
 	Send(webhookURL string, webhookMessage MessageCard) error
+	SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error
 }
 
 type teamsClient struct {
@@ -39,14 +45,27 @@ type teamsClient struct {
 func NewClient() API {
 	client := teamsClient{
 		httpClient: &http.Client{
-			Timeout: 5 * time.Second,
+			// We're using a context instead of setting this directly
+			// Timeout: DefaultWebhookSendTimeout,
 		},
 	}
 	return &client
 }
 
-// Send - will post a notification to MS Teams webhook URL
+// Send is a wrapper function around the SendWithContext method in order to
+// provide backwards compatibility.
 func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
+	// Create context that can be used to emulate existing timeout behavior.
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultWebhookSendTimeout)
+	defer cancel()
+
+	return c.SendWithContext(ctx, webhookURL, webhookMessage)
+}
+
+// SendWithContext posts a notification to the provided MS Teams webhook URL.
+// The http client request honors the cancellation or timeout of the provided
+// context.
+func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error {
 	// Validate input data
 	if valid, err := IsValidInput(webhookMessage, webhookURL); !valid {
 		return err
@@ -57,7 +76,7 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
 	// prepare request (error not possible)
-	req, _ := http.NewRequest(http.MethodPost, webhookURL, webhookMessageBuffer)
+	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, webhookURL, webhookMessageBuffer)
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 
 	// do the request
