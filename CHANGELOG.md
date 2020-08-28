@@ -26,6 +26,39 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v2.2.0] - 2020-8-28
+
+### Added
+
+- Add package-level logger
+- Extend API to allow request cancellation via context
+- Add formatting functions useful for text conversion
+  - Convert Windows/Mac/Linux EOL to Markdown break statements
+    - used to provide equivalent Teams-compatible formatting
+  - Format text as code snippet
+    - this inserts leading and trailing ` character to provide Markdown string
+      formatting
+  - Format text as code block
+    - this inserts three leading and trailing ` characters to provide Markdown
+      code block formatting
+  - *`Try`* variants of code formatting functions
+    - return formatted string if no errors, otherwise return the original
+      string
+
+### Changed
+
+- Expose API response strings containing potential error messages
+- README
+  - Explicitly note that this fork is now standalone until such time that the
+    upstream project resumes development/maintenance efforts
+
+### Fixed
+
+- CHANGELOG section link in previous release
+- Invalid `RoundTripper` implementation used in `TestTeamsClientSend` test
+  function
+  - see `GH-46` and `GH-47`; thank you `@davecheney` for the fix!
+
 ## [v2.1.1] - 2020-08-25
 
 ### Added
@@ -207,7 +240,8 @@ The following types of changes will be recorded in this file:
 
 - add initial functionality of sending messages to MS Teams channel
 
-[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.2.0...HEAD
+[v2.2.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.2.0
 [v2.1.1]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.1
 [v2.1.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.0.0
