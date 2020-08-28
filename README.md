@@ -15,6 +15,8 @@ A package to send messages to Microsoft Teams (channels)
 ## Table of contents
 
 - [Project home](#project-home)
+- [Project status](#project-status)
+- [Project goals](#project-goals)
 - [Overview](#overview)
 - [Features](#features)
 - [Changelog](#changelog)
@@ -23,13 +25,51 @@ A package to send messages to Microsoft Teams (channels)
 
 ## Project home
 
-See [our GitHub repo](https://github.com/atc0005/ntpt) for the latest
-code, to file an issue or submit improvements for review and potential
+See [our GitHub repo](https://github.com/atc0005/go-teams-notify) for the
+latest code, to file an issue or submit improvements for review and potential
 inclusion into the project.
+
+## Project status
+
+This fork is now a standalone project.
+
+The last [upstream project
+release](https://github.com/dasrick/go-teams-notify/releases) was `v2.1.0`. I
+have tried multiple times to reach the project maintainer (through a variety
+of means) and having been unsuccessful, I have opted to take all
+pending/proposed changes for that project and implement them here.
+
+With work having stalled on the upstream project, others have also taken an
+interest in [maintaining their own
+forks](https://github.com/atc0005/go-teams-notify/network/members) of the
+parent project codebase. See those forks for other ideas/changes that you may
+find useful.
+
+## Project goals
+
+[v2.1.1](https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.1) was
+the first release from this project since diverging from upstream. As I write
+this, `v2.2.0` is nearly ready for release. I have further changes that I plan
+to incorporate into this fork from another project that I maintain,
+[atc0005/send2teams](https://github.com/atc0005/send2teams).
+
+After that work is complete, this project is likely to enter a "maintenance"
+mode in favor of other projects that I maintain. I plan to apply bugfixes,
+maintain dependencies and make improvements as warranted to meet the needs of
+dependent projects.
+
+All of that said, I hope to eventually collapse this project and merge all
+changes back into the upstream project.
+
+While forking a project allows bypassing hangups with local development, it
+also fragments the user base. Unless absolutely necessary (as may be the case
+here based on lack of respone from upstream), that carries a potentially high
+cost of maintenance across all forks that wish to remain up to date/relevant.
 
 ## Overview
 
-Send simple or complex messages to a Microsoft Teams channel.
+The `goteamsnotify` package (aka, `go-teams-notify`) allows sending simple or
+complex messages to a Microsoft Teams channel.
 
 Simple messages can be composed of only a title and a text body with complex
 messages supporting multiple sections, key/value pairs (aka, `Facts`) and/or
@@ -97,6 +137,9 @@ func sendTheMessage() error {
 ```
 
 ## References
+
+- [Original project](https://github.com/dasrick/go-teams-notify)
+- [Forks of original project](https://github.com/atc0005/go-teams-notify/network/members)
 
 - Microsoft Teams
   - MS Teams - adaptive cards
