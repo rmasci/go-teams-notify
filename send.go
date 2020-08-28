@@ -17,9 +17,14 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
+
+// logger is a package logger that can be enabled from client code to allow
+// logging output from this package when desired/needed for troubleshooting
+var logger *log.Logger
 
 // Known webhook URL prefixes for submitting messages to Microsoft Teams
 const (
@@ -39,6 +44,27 @@ type API interface {
 
 type teamsClient struct {
 	httpClient *http.Client
+}
+
+func init() {
+	// Disable logging output by default unless client code explicitly
+	// requests it
+	logger = log.New(os.Stderr, "[goteamsnotify] ", 0)
+	logger.SetOutput(ioutil.Discard)
+}
+
+// EnableLogging enables logging output from this package. Output is muted by
+// default unless explicitly requested (by calling this function).
+func EnableLogging() {
+	logger.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	logger.SetOutput(os.Stderr)
+}
+
+// DisableLogging reapplies default package-level logging settings of muting
+// all logging output.
+func DisableLogging() {
+	logger.SetFlags(0)
+	logger.SetOutput(ioutil.Discard)
 }
 
 // NewClient - create a brand new client for MS Teams notify
@@ -66,6 +92,8 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 // The http client request honors the cancellation or timeout of the provided
 // context.
 func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error {
+	logger.Printf("SendWithContext: Webhook message received: %#v\n", webhookMessage)
+
 	// Validate input data
 	if valid, err := IsValidInput(webhookMessage, webhookURL); !valid {
 		return err
@@ -75,6 +103,15 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	webhookMessageByte, _ := json.Marshal(webhookMessage)
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
+	// Basic, unformatted JSON
+	//logger.Printf("SendWithContext: %+v\n", string(webhookMessageByte))
+
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, webhookMessageByte, "", "\t"); err != nil {
+		return err
+	}
+	logger.Printf("SendWithContext: Payload for Microsoft Teams: \n\n%v\n\n", prettyJSON.String())
+
 	// prepare request (error not possible)
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost, webhookURL, webhookMessageBuffer)
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
@@ -82,7 +119,12 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	// do the request
 	res, err := c.httpClient.Do(req)
 	if err != nil {
+		logger.Println(err)
 		return err
+	}
+
+	if ctx.Err() != nil {
+		logger.Println("SendWithContext: Context has expired after Do(req):", time.Now().Format("15:04:05"))
 	}
 
 	// Make sure that we close the response body once we're done with it
@@ -96,8 +138,10 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	// error messages
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		logger.Println(err)
 		return err
 	}
+	responseString := string(responseData)
 
 	if res.StatusCode >= 299 {
 		// 400 Bad Response is likely an indicator that we failed to provide a
@@ -107,9 +151,13 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 		// that response text in the error message that we return to the
 		// caller.
 
-		err = fmt.Errorf("error on notification: %v, %q", res.Status, string(responseData))
+		err = fmt.Errorf("error on notification: %v, %q", res.Status, responseString)
+		logger.Println(err)
 		return err
 	}
+
+	// log the response string
+	logger.Printf("SendWithContext: Response string from Microsoft Teams API: %v\n", responseString)
 
 	return nil
 }
