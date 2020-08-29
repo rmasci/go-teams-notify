@@ -168,7 +168,6 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 // provided the desired context timeout, the number of retries and retries
 // delay.
 func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webhookMessage MessageCard, retries int, retriesDelay int) error {
-
 	// init the client
 	mstClient := NewClient()
 
@@ -177,14 +176,30 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 	// initial attempt + number of specified retries
 	attemptsAllowed := 1 + retries
 
+RetryLoop:
 	// attempt to send message to Microsoft Teams, retry specified number of
 	// times before giving up
 	for attempt := 1; attempt <= attemptsAllowed; attempt++ {
+		// the result from the last attempt is returned to the caller
+		result = mstClient.SendWithContext(ctx, webhookURL, webhookMessage)
+
+		switch {
+		case result == nil:
+			logger.Printf(
+				"SendWithRetry: successfully sent message after %d of %d attempts\n",
+				attempt,
+				attemptsAllowed,
+			)
+
+			// No further retries needed, break out of switch & retry for loop
+			break RetryLoop
+
 		// While the context is passed to mstClient.SendWithContext and it
 		// should ensure that it is respected, we check here at the start of
 		// the loop iteration (either first or subsequent) in order to return
 		// early in an effort to prevent undesired message attempts
-		if ctx.Err() != nil {
+		case ctx.Err() != nil:
+
 			msg := fmt.Sprintf(
 				"SendWithRetry: context cancelled or expired: %v; aborting message submission after %d of %d attempts",
 				ctx.Err().Error(),
@@ -200,11 +215,8 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 
 			logger.Println(msg)
 			return fmt.Errorf(msg)
-		}
 
-		// the result from the last attempt is returned to the caller
-		result = mstClient.SendWithContext(ctx, webhookURL, webhookMessage)
-		if result != nil {
+		case result != nil:
 			ourRetryDelay := time.Duration(retriesDelay) * time.Second
 
 			logger.Printf(
@@ -227,13 +239,6 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 
 			continue
 		}
-
-		logger.Printf(
-			"SendWithRetry: successfully sent message after %d of %d attempts\n",
-			attempt,
-			attemptsAllowed,
-		)
-		break
 	}
 
 	return result
