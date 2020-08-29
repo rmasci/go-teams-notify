@@ -176,7 +176,6 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 	// initial attempt + number of specified retries
 	attemptsAllowed := 1 + retries
 
-RetryLoop:
 	// attempt to send message to Microsoft Teams, retry specified number of
 	// times before giving up
 	for attempt := 1; attempt <= attemptsAllowed; attempt++ {
@@ -185,38 +184,36 @@ RetryLoop:
 
 		switch {
 		case result == nil:
+
 			logger.Printf(
 				"SendWithRetry: successfully sent message after %d of %d attempts\n",
 				attempt,
 				attemptsAllowed,
 			)
 
-			// No further retries needed, break out of switch & retry for loop
-			break RetryLoop
+			// No further retries needed
+			return nil
 
 		// While the context is passed to mstClient.SendWithContext and it
-		// should ensure that it is respected, we check here at the start of
-		// the loop iteration (either first or subsequent) in order to return
-		// early in an effort to prevent undesired message attempts
-		case ctx.Err() != nil:
+		// should ensure that it is respected, we check here explicitly in
+		// order to return early in an effort to prevent undesired message
+		// attempts
+		case ctx.Err() != nil && result != nil:
 
-			msg := fmt.Sprintf(
-				"SendWithRetry: context cancelled or expired: %v; aborting message submission after %d of %d attempts",
+			errMsg := fmt.Errorf(
+				"SendWithRetry: context cancelled or expired: %v; "+
+					"aborting message submission after %d of %d attempts: %w",
 				ctx.Err().Error(),
 				attempt,
 				attemptsAllowed,
+				result,
 			)
 
-			// if this is set, we're looking at the second (incomplete)
-			// iteration
-			if result != nil {
-				msg += ": " + result.Error()
-			}
-
-			logger.Println(msg)
-			return fmt.Errorf(msg)
+			logger.Println(errMsg)
+			return errMsg
 
 		case result != nil:
+
 			ourRetryDelay := time.Duration(retriesDelay) * time.Second
 
 			logger.Printf(
@@ -226,18 +223,14 @@ RetryLoop:
 				result,
 			)
 
-			// apply retry delay if our context hasn't been cancelled yet,
+			// apply retry delay since our context hasn't been cancelled yet,
 			// otherwise continue with the loop to allow context cancellation
 			// handling logic to be applied
-			if ctx.Err() == nil {
-				logger.Printf(
-					"SendWithRetry: Context not cancelled yet, applying retry delay of %v",
-					ourRetryDelay,
-				)
-				time.Sleep(ourRetryDelay)
-			}
-
-			continue
+			logger.Printf(
+				"SendWithRetry: Context not cancelled yet, applying retry delay of %v",
+				ourRetryDelay,
+			)
+			time.Sleep(ourRetryDelay)
 		}
 	}
 
