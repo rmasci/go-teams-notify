@@ -105,7 +105,7 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	webhookMessageBuffer := bytes.NewBuffer(webhookMessageByte)
 
 	// Basic, unformatted JSON
-	//logger.Printf("SendWithContext: %+v\n", string(webhookMessageByte))
+	// logger.Printf("SendWithContext: %+v\n", string(webhookMessageByte))
 
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, webhookMessageByte, "", "\t"); err != nil {
