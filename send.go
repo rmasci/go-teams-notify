@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -35,6 +36,10 @@ const (
 // DefaultWebhookSendTimeout specifies how long the message operation may take
 // before it times out and is cancelled.
 const DefaultWebhookSendTimeout = 5 * time.Second
+
+// ErrWebhookURLUnexpectedPrefix is returned when a provided webhook URL does
+// not match a set of confirmed webhook URL prefixes.
+var ErrWebhookURLUnexpectedPrefix = errors.New("webhook URL does not contain expected prefix")
 
 // API - interface of MS Teams notify
 type API interface {
@@ -291,10 +296,11 @@ func IsValidWebhookURL(webhookURL string) (bool, error) {
 		userProvidedWebhookURLPrefix := u.Scheme + "://" + u.Host
 
 		return false, fmt.Errorf(
-			"webhook URL does not contain expected prefix; got %q, expected one of %q or %q",
+			"webhook URL %q received; expected one of %q or %q: %w",
 			userProvidedWebhookURLPrefix,
 			WebhookURLOfficecomPrefix,
 			WebhookURLOffice365Prefix,
+			ErrWebhookURLUnexpectedPrefix,
 		)
 	}
 
