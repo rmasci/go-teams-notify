@@ -33,6 +33,10 @@ const (
 	WebhookURLOffice365Prefix = "https://outlook.office365.com"
 )
 
+// ExpectedWebhookURLResponseText represents the expected response text
+// provided by the remote webhook endpoint when submitting messages.
+const ExpectedWebhookURLResponseText string = "1"
+
 // DefaultWebhookSendTimeout specifies how long the message operation may take
 // before it times out and is cancelled.
 const DefaultWebhookSendTimeout = 5 * time.Second
@@ -40,6 +44,11 @@ const DefaultWebhookSendTimeout = 5 * time.Second
 // ErrWebhookURLUnexpectedPrefix is returned when a provided webhook URL does
 // not match a set of confirmed webhook URL prefixes.
 var ErrWebhookURLUnexpectedPrefix = errors.New("webhook URL does not contain expected prefix")
+
+// ErrInvalidWebhookURLResponseText is returned when the remote webhook
+// endpoint indicates via response text that a message submission was
+// unsuccessful.
+var ErrInvalidWebhookURLResponseText = errors.New("invalid webhook URL response text")
 
 // API - interface of MS Teams notify
 type API interface {
@@ -160,23 +169,44 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	}
 	responseString := string(responseData)
 
-	if res.StatusCode >= 299 {
-		// 400 Bad Response is likely an indicator that we failed to provide a
-		// required field in our JSON payload. For example, when leaving out
-		// the top level MessageCard Summary or Text field, the remote API
-		// returns "Summary or Text is required." as a text string. We include
-		// that response text in the error message that we return to the
-		// caller.
-
+	switch {
+	// 400 Bad Response is likely an indicator that we failed to provide a
+	// required field in our JSON payload. For example, when leaving out the
+	// top level MessageCard Summary or Text field, the remote API returns
+	// "Summary or Text is required." as a text string. We include that
+	// response text in the error message that we return to the caller.
+	case res.StatusCode >= 299:
 		err = fmt.Errorf("error on notification: %v, %q", res.Status, responseString)
 		logger.Println(err)
 		return err
+
+	// Microsoft Teams developers have indicated that a 200 status code is
+	// insufficient to confirm that a message was successfully submitted.
+	// Instead, clients should ensure that a specific response string was also
+	// returned along with a 200 status code to confirm that a message was
+	// sent successfully. Because there is a chance that unintentional
+	// whitespace could be included, we explicitly strip it out.
+	//
+	// See atc0005/go-teams-notify#59 for more information.
+	case responseString != strings.TrimSpace(ExpectedWebhookURLResponseText):
+
+		err = fmt.Errorf(
+			"got %q, expected %q: %w",
+			responseString,
+			ExpectedWebhookURLResponseText,
+			ErrInvalidWebhookURLResponseText,
+		)
+
+		logger.Println(err)
+		return err
+
+	default:
+
+		// log the response string
+		logger.Printf("SendWithContext: Response string from Microsoft Teams API: %v\n", responseString)
+
+		return nil
 	}
-
-	// log the response string
-	logger.Printf("SendWithContext: Response string from Microsoft Teams API: %v\n", responseString)
-
-	return nil
 }
 
 // SendWithRetry is a wrapper function around the SendWithContext method in
