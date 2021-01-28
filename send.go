@@ -35,6 +35,10 @@ const (
 	WebhookURLOrgWebhookPrefix = "https://example.webhook.office.com"
 )
 
+// DisableWebhookURLValidation is a special keyword used to indicate to
+// validation function(s) that webhook URL validation should be disabled.
+const DisableWebhookURLValidation string = "DISABLE_WEBHOOK_URL_VALIDATION"
+
 // Regular Expression related constants that we can use to validate incoming
 // webhook URLs provided by the user.
 const (
@@ -137,9 +141,8 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 	// optionally skip webhook validation
 	webhookURLToValidate := webhookURL
 	if c.skipWebhookURLValidation {
-		// WebhookURLOfficecomPrefix will pass the validation step
 		logger.Printf("SendWithContext: Webhook URL will not be validated: %#v\n", webhookURL)
-		webhookURLToValidate = WebhookURLOfficecomPrefix
+		webhookURLToValidate = DisableWebhookURLValidation
 	}
 
 	// Validate input data
@@ -303,7 +306,7 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 }
 
 // SkipWebhookURLValidationOnSend allows the caller to optionally disable
-// webhook URL prefix validation.
+// webhook URL validation.
 func (c *teamsClient) SkipWebhookURLValidationOnSend(skip bool) {
 	c.skipWebhookURLValidation = skip
 }
@@ -330,6 +333,11 @@ func IsValidInput(webhookMessage MessageCard, webhookURL string) (bool, error) {
 // IsValidWebhookURL performs validation checks on the webhook URL used to
 // submit messages to Microsoft Teams.
 func IsValidWebhookURL(webhookURL string) (bool, error) {
+	// Skip validation if requested
+	if webhookURL == DisableWebhookURLValidation {
+		return true, nil
+	}
+
 	u, err := url.Parse(webhookURL)
 	if err != nil {
 		return false, fmt.Errorf(
