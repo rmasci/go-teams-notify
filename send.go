@@ -41,6 +41,7 @@ type API interface {
 	Send(webhookURL string, webhookMessage MessageCard) error
 	SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error
 	SendWithRetry(ctx context.Context, webhookURL string, webhookMessage MessageCard, retries int, retriesDelay int) error
+	SkipWebhookURLValidationOnSend(skip bool)
 }
 
 type teamsClient struct {
