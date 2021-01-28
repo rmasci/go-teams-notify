@@ -35,5 +35,5 @@ jobs:
       - name: Run golangci-lint using container-provided config file settings
         run: golangci-lint run -v
 
-      - name: Run all tests
-        run: go test -mod=vendor -v ./...
+      - name: Run all tests recursively, verbosely
+        run: go test -v -mod=vendor -v ./...

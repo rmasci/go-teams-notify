@@ -4,7 +4,7 @@
 A package to send messages to Microsoft Teams (channels)
 
 [![Latest release][githubtag-image]][githubtag-url]
-[![GoDoc][godoc-image]][godoc-url]
+[![Go Reference][goref-image]][goref-url]
 [![License][license-image]][license-url]
 [![Validate Codebase](https://github.com/atc0005/go-teams-notify/workflows/Validate%20Codebase/badge.svg)](https://github.com/atc0005/go-teams-notify/actions?query=workflow%3A%22Validate+Codebase%22)
 [![Validate Docs](https://github.com/atc0005/go-teams-notify/workflows/Validate%20Docs/badge.svg)](https://github.com/atc0005/go-teams-notify/actions?query=workflow%3A%22Validate+Docs%22)
@@ -158,8 +158,8 @@ func sendTheMessage() error {
 [githubtag-image]: https://img.shields.io/github/release/atc0005/go-teams-notify.svg?style=flat
 [githubtag-url]: https://github.com/atc0005/go-teams-notify
 
-[godoc-image]: https://godoc.org/github.com/atc0005/go-teams-notify?status.svg
-[godoc-url]: https://godoc.org/github.com/atc0005/go-teams-notify
+[goref-image]: https://pkg.go.dev/badge/github.com/atc0005/go-teams-notify/v2.svg
+[goref-url]: https://pkg.go.dev/github.com/atc0005/go-teams-notify/v2
 
 [license-image]: https://img.shields.io/github/license/atc0005/go-teams-notify.svg?style=flat
 [license-url]: https://github.com/atc0005/go-teams-notify/blob/master/LICENSE
