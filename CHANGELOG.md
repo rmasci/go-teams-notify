@@ -26,6 +26,39 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v2.4.0] - 2021-01-28
+
+### Added
+
+- Add (optional) support for disabling webhook URL prefix validation
+  - credit: [@odise](https://github.com/odise)
+
+### Changed
+
+- Documentation
+  - Refresh "basic" example
+  - Add example for disabling webhook URL prefix validation
+  - Update "about this project" coverage
+  - Swap GoDoc badge for pkg.go.dev badge
+
+- Tests
+  - Extend test coverage
+  - Verbose test output by default (Makefile, GitHub Actions Workflow)
+
+- Dependencies
+  - `actions/setup-node`
+    - `v2.1.1` to `v2.1.4`
+  - `actions/checkout`
+    - `v2.3.2` to `v2.3.4`
+  - `stretchr/testify`
+    - `v1.6.1` to `v1.7.0`
+
+### Fixed
+
+- minor linting error for commented code
+- Tests fail to assert that any errors which occur are expected, only the
+  types
+
 ## [v2.3.0] - 2020-08-29
 
 ### Added
@@ -256,7 +289,8 @@ The following types of changes will be recorded in this file:
 
 - add initial functionality of sending messages to MS Teams channel
 
-[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.4.0...HEAD
+[v2.4.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.4.0
 [v2.3.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.3.0
 [v2.2.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.2.0
 [v2.1.1]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.1
