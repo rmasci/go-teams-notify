@@ -29,84 +29,121 @@ func TestTeamsClientSend(t *testing.T) {
 	simpleMsgCard := NewMessageCard()
 	simpleMsgCard.Text = "Hello World"
 	var tests = []struct {
-		reqURL    string
-		reqMsg    MessageCard
-		resStatus int    // httpClient response status
-		resBody   string // httpClient response body text
-		resError  error  // httpClient error
-		error     error  // method error
+		reqURL     string
+		reqMsg     MessageCard
+		resStatus  int    // httpClient response status
+		resBody    string // httpClient response body text
+		resError   error  // httpClient error
+		error      error  // method error
+		skipURLVal bool   // whether webhook URL validation is applied (e.g., GH-68)
 	}{
 		// invalid webhookURL - url.Parse error
 		{
-			reqURL:    "ht\ttp://",
-			reqMsg:    simpleMsgCard,
-			resStatus: 0,
-			resBody:   "invalid",
-			resError:  nil,
-			error:     &url.Error{},
+			reqURL:     "ht\ttp://",
+			reqMsg:     simpleMsgCard,
+			resStatus:  0,
+			resBody:    "invalid",
+			resError:   nil,
+			error:      &url.Error{},
+			skipURLVal: false,
 		},
 		// invalid webhookURL - missing prefix in webhook URL
 		{
-			reqURL:    "",
-			reqMsg:    simpleMsgCard,
-			resStatus: 0,
-			resBody:   "invalid",
-			resError:  nil,
-			error:     ErrWebhookURLUnexpectedPrefix,
+			reqURL:     "",
+			reqMsg:     simpleMsgCard,
+			resStatus:  0,
+			resBody:    "invalid",
+			resError:   nil,
+			error:      ErrWebhookURLUnexpectedPrefix,
+			skipURLVal: false,
 		},
 		// invalid httpClient.Do call
 		{
-			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resBody:   http.StatusText(http.StatusOK),
-			resError:  errors.New("pling"),
-			error:     &url.Error{},
+			reqURL:     "https://outlook.office.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  200,
+			resBody:    http.StatusText(http.StatusOK),
+			resError:   errors.New("pling"),
+			error:      &url.Error{},
+			skipURLVal: false,
 		},
 		// invalid httpClient.Do call
 		{
-			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resBody:   http.StatusText(http.StatusOK),
-			resError:  errors.New("pling"),
-			error:     &url.Error{},
+			reqURL:     "https://outlook.office365.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  200,
+			resBody:    http.StatusText(http.StatusOK),
+			resError:   errors.New("pling"),
+			error:      &url.Error{},
+			skipURLVal: false,
 		},
 		// invalid response status code
 		{
-			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 400,
-			resBody:   http.StatusText(http.StatusBadRequest),
-			resError:  nil,
-			error:     errors.New(""),
+			reqURL:     "https://outlook.office.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  400,
+			resBody:    http.StatusText(http.StatusBadRequest),
+			resError:   nil,
+			error:      errors.New(""),
+			skipURLVal: false,
 		},
 		// invalid response status code
 		{
-			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 400,
-			resBody:   http.StatusText(http.StatusBadRequest),
-			resError:  nil,
-			error:     errors.New(""),
+			reqURL:     "https://outlook.office365.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  400,
+			resBody:    http.StatusText(http.StatusBadRequest),
+			resError:   nil,
+			error:      errors.New(""),
+			skipURLVal: false,
 		},
 		// valid
 		{
-			reqURL:    "https://outlook.office.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resBody:   http.StatusText(http.StatusOK),
-			resError:  nil,
-			error:     nil,
+			reqURL:     "https://outlook.office.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  200,
+			resBody:    http.StatusText(http.StatusOK),
+			resError:   nil,
+			error:      nil,
+			skipURLVal: false,
 		},
 		// valid
 		{
-			reqURL:    "https://outlook.office365.com/webhook/xxx",
-			reqMsg:    simpleMsgCard,
-			resStatus: 200,
-			resBody:   http.StatusText(http.StatusOK),
-			resError:  nil,
-			error:     nil,
+			reqURL:     "https://outlook.office365.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  200,
+			resBody:    http.StatusText(http.StatusOK),
+			resError:   nil,
+			error:      nil,
+			skipURLVal: false,
+		},
+		// custom webhook domain (e.g., GH-68) without disabling validation
+		//
+		// This test case should not result in an actual client request going
+		// out as validation failure should occur.
+		{
+			reqURL:     "https://example.webhook.office.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  0,
+			resBody:    "",
+			resError:   nil,
+			error:      ErrWebhookURLUnexpectedPrefix,
+			skipURLVal: false,
+		},
+		// custom webhook domain (e.g., GH-68) with validation disabled
+		//
+		// This is expected to succeed, provided that the actual webhook URL
+		// is valid. GH-68 indicates that private webhook endpoints exist, but
+		// without knowing the names or valid patterns, this is about all we
+		// can do for now?
+		{
+			reqURL:     "https://example.webhook.office.com/webhook/xxx",
+			reqMsg:     simpleMsgCard,
+			resStatus:  200,
+			resBody:    http.StatusText(http.StatusOK),
+			resError:   nil,
+			error:      nil,
+			skipURLVal: true,
 		},
 	}
 	for idx, test := range tests {
@@ -145,6 +182,13 @@ func TestTeamsClientSend(t *testing.T) {
 			}, nil
 		})
 		c := &teamsClient{httpClient: client}
+
+		// Disable webhook URL prefix validation if specified by table test
+		// entry. See GH-68 for additional details.
+		if test.skipURLVal {
+			t.Log("Calling SkipWebhookURLValidationOnSend")
+			c.SkipWebhookURLValidationOnSend(true)
+		}
 
 		err := c.Send(test.reqURL, test.reqMsg)
 		if err != nil {
