@@ -248,8 +248,9 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 	return result
 }
 
-// SkipWebhookUrlValidationOnSend Optionally do not validate the webhook URL.
-func (c teamsClient) SkipWebhookURLValidationOnSend(skip bool) {
+// SkipWebhookURLValidationOnSend allows the caller to optionally disable
+// webhook URL prefix validation.
+func (c *teamsClient) SkipWebhookURLValidationOnSend(skip bool) {
 	c.skipWebhookURLValidation = skip
 }
 
