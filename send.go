@@ -214,9 +214,6 @@ func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, web
 // provided the desired context timeout, the number of retries and retries
 // delay.
 func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webhookMessage MessageCard, retries int, retriesDelay int) error {
-	// init the client
-	mstClient := NewClient()
-
 	var result error
 
 	// initial attempt + number of specified retries
@@ -226,7 +223,7 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 	// times before giving up
 	for attempt := 1; attempt <= attemptsAllowed; attempt++ {
 		// the result from the last attempt is returned to the caller
-		result = mstClient.SendWithContext(ctx, webhookURL, webhookMessage)
+		result = c.SendWithContext(ctx, webhookURL, webhookMessage)
 
 		switch {
 		case result == nil:
