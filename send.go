@@ -44,7 +44,8 @@ type API interface {
 }
 
 type teamsClient struct {
-	httpClient *http.Client
+	httpClient               *http.Client
+	skipWebhookURLValidation bool
 }
 
 func init() {
@@ -75,6 +76,7 @@ func NewClient() API {
 			// We're using a context instead of setting this directly
 			// Timeout: DefaultWebhookSendTimeout,
 		},
+		skipWebhookURLValidation: false,
 	}
 	return &client
 }
@@ -95,8 +97,16 @@ func (c teamsClient) Send(webhookURL string, webhookMessage MessageCard) error {
 func (c teamsClient) SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error {
 	logger.Printf("SendWithContext: Webhook message received: %#v\n", webhookMessage)
 
+	// optionally skip webhook validation
+	webhookURLToValidate := webhookURL
+	if c.skipWebhookURLValidation {
+		// WebhookURLOfficecomPrefix will pass the validation step
+		logger.Printf("SendWithContext: Webhook URL will not be validated: %#v\n", webhookURL)
+		webhookURLToValidate = WebhookURLOfficecomPrefix
+	}
+
 	// Validate input data
-	if valid, err := IsValidInput(webhookMessage, webhookURL); !valid {
+	if valid, err := IsValidInput(webhookMessage, webhookURLToValidate); !valid {
 		return err
 	}
 
@@ -235,6 +245,11 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 	}
 
 	return result
+}
+
+// SkipWebhookUrlValidationOnSend Optionally do not validate the webhook URL.
+func (c teamsClient) SkipWebhookURLValidationOnSend(skip bool) {
+	c.skipWebhookURLValidation = skip
 }
 
 // helper --------------------------------------------------------------------------------------------------------------
