@@ -23,6 +23,9 @@ A package to send messages to Microsoft Teams (channels)
   - [Future](#future)
 - [Changelog](#changelog)
 - [Usage](#usage)
+  - [Add this project as a dependency](#add-this-project-as-a-dependency)
+  - [Example: Basic](#example-basic)
+  - [Example: Disable webhook URL prefix validation](#example-disable-webhook-url-prefix-validation)
 - [References](#references)
 
 ## Project home
@@ -98,19 +101,24 @@ official release is also provided for further review.
 
 ## Usage
 
-To get the package, execute:
+### Add this project as a dependency
 
-```console
-go get https://github.com/atc0005/go-teams-notify/v2
-```
-
-To import this package, add the following line to your code:
+Assuming that you're using [Go
+Modules](https://blog.golang.org/using-go-modules), add this line to your
+imports like so:
 
 ```golang
 import "github.com/atc0005/go-teams-notify/v2"
 ```
 
-And this is an example of a simple implementation ...
+Your editor will likely resolve the import and update your `go.mod` and
+`go.sum` files accordingly. If not, read the official [Go
+Modules](https://blog.golang.org/using-go-modules) blog post on the topic for
+further information.
+
+### Example: Basic
+
+Here is an example of a simple client application which uses this library:
 
 ```golang
 import (
@@ -139,6 +147,56 @@ func sendTheMessage() error {
   return mstClient.Send(webhookUrl, msgCard)
 }
 ```
+
+Of note:
+
+- default timeout
+- package-level logging is disabled by default
+- known webhook URL prefix validation is *enabled*
+- simple message submitted to Microsoft Teams consisting of formatted body and
+  title
+
+### Example: Disable webhook URL prefix validation
+
+This example disables the validation of known webhook URL prefixes so that
+custom/private webhook URL endpoints can be used.
+
+```golang
+import (
+  "github.com/atc0005/go-teams-notify/v2"
+)
+
+func main() {
+  _ = sendTheMessage()
+}
+
+func sendTheMessage() error {
+  // init the client
+  mstClient := goteamsnotify.NewClient()
+
+  // setup webhook url
+  webhookUrl := "https://example.webhook.office.com/webhook/YOUR_WEBHOOK_URL_OF_TEAMS_CHANNEL"
+
+  // Disable webhook URL prefix validation
+  mstClient.SkipWebhookURLValidationOnSend(true)
+
+  // setup message card
+  msgCard := goteamsnotify.NewMessageCard()
+  msgCard.Title = "Hello world"
+  msgCard.Text = "Here are some examples of formatted stuff like "+
+      "<br> * this list itself  <br> * **bold** <br> * *italic* <br> * ***bolditalic***"
+  msgCard.ThemeColor = "#DF813D"
+
+  // send
+  return mstClient.Send(webhookUrl, msgCard)
+}
+```
+
+Of note:
+
+- known webhook URL prefix validation is **disabled**
+  - allows use of custom/private webhook URL endpoints
+- other settings are the same as the basic example previously listed
 
 ## References
 
