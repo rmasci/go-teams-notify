@@ -52,7 +52,7 @@ func TestTeamsClientSend(t *testing.T) {
 			resStatus: 0,
 			resBody:   "invalid",
 			resError:  nil,
-			error:     errors.New(""),
+			error:     ErrWebhookURLUnexpectedPrefix,
 		},
 		// invalid httpClient.Do call
 		{
@@ -147,44 +147,33 @@ func TestTeamsClientSend(t *testing.T) {
 		c := &teamsClient{httpClient: client}
 
 		err := c.Send(test.reqURL, test.reqMsg)
-
-		// BUG: This does not handle comparing wrapped errors (GH-23).
-		// assert.IsType(t, test.error, err)
-
-		// FIX: Current master branch of stretchr/testing provides
-		// assert.ErrorAs(), but this isn't officially available until v1.7.x.
-		//
-		// Note: This provides a wrapper around Go 1.13+ stdlib error wrapping
-		// functionality.
-		//
-		// if err != nil {
-		// 	assert.ErrorAs(t, err, &test.error)
-		// }
-
-		// FIX: Use Go 1.13 stdlib errors.As() as a replacement for
-		// assert.IsType() in order to provide a type assertion of wrapped
-		// errors to table test errors.
 		if err != nil {
-			// FIXME: This won't work if the test.reqURL is well-formed, but
-			// does not contain one of the two known valid prefixes.
-			if !errors.As(err, &test.error) {
+
+			// Type assertion check between returned error and specified table
+			// test error.
+			//
+			// WARNING: errors.As modifies the error target, so we create a
+			// copy of test.error for use with errors.As so that we don't
+			// modify the original and affect any later tests in this loop.
+			targetErr := test.error
+			if !errors.As(err, &targetErr) {
 				t.Fatalf(
 					"FAIL: test %d; got %T, want %T",
 					idx,
-					errors.Unwrap(err),
-					test.error,
+					err,
+					targetErr,
 				)
 			} else {
 				t.Logf(
-					"OK: test %d; test.error is of type %T, err is of type %T",
+					"OK: test %d; targetErr is of type %T, err is of type %T",
 					idx,
-					test.error,
+					targetErr,
 					err,
 				)
 				t.Logf(
-					"OK: test %d; test.error has value '%s'",
+					"OK: test %d; targetErr has value '%s'",
 					idx,
-					test.error.Error(),
+					targetErr.Error(),
 				)
 				t.Logf(
 					"OK: test %d; error response has value '%s'",
@@ -195,6 +184,39 @@ func TestTeamsClientSend(t *testing.T) {
 		} else {
 			t.Logf("OK: test %d; no error; response body: '%s'", idx, test.resBody)
 		}
+
+		switch {
+
+		// An error occurred, but table test entry indicates no error expected.
+		case err != nil && test.error == nil:
+			t.Logf("FAIL: test %d; error occurred, but none expected!", idx)
+			t.Fatalf(
+				"FAIL: test %d; got '%v', want '%v'",
+				idx,
+				err,
+				test.error,
+			)
+
+		// No error occurred, but table test entry indicates one expected.
+		case err == nil && test.error != nil:
+			t.Logf("FAIL: test %d; no error occurred, but one was expected!", idx)
+			t.Fatalf(
+				"FAIL: test %d; got '%v', want '%v'",
+				idx,
+				err,
+				test.error,
+			)
+
+		// No error occurred and table test entry indicates no error expected.
+		case err == nil && test.error == nil:
+			t.Logf("OK: test %d; no error occurred and table test entry indicates no error expected.", idx)
+
+		// Error occurred and table test entry indicates one expected.
+		case err != nil && test.error != nil:
+			t.Logf("OK: test %d; error occurred and table test entry indicates one expected.", idx)
+
+		}
+
 	}
 }
 
