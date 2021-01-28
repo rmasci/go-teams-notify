@@ -26,6 +26,18 @@ The following types of changes will be recorded in this file:
 
 - placeholder
 
+## [v2.4.1] - 2021-01-28
+
+### Changed
+
+- (GH-59) Webhook URL API endpoint response validation now requires a `1` text
+  string as the response body
+
+### Fixed
+
+- (GH-59) Microsoft Teams Webhook Connector "200 OK" status insufficient
+  indication of success
+
 ## [v2.4.0] - 2021-01-28
 
 ### Added
@@ -289,7 +301,8 @@ The following types of changes will be recorded in this file:
 
 - add initial functionality of sending messages to MS Teams channel
 
-[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/atc0005/go-teams-notify/compare/v2.4.1...HEAD
+[v2.4.1]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.4.1
 [v2.4.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.4.0
 [v2.3.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.3.0
 [v2.2.0]: https://github.com/atc0005/go-teams-notify/releases/tag/v2.2.0
