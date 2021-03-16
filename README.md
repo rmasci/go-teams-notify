@@ -42,9 +42,9 @@ inclusion into the project.
 The `goteamsnotify` package (aka, `go-teams-notify`) allows sending simple or
 complex messages to a Microsoft Teams channel.
 
-Simple messages can be composed of only a title and a text body with complex
-messages supporting multiple sections, key/value pairs (aka, `Facts`) and/or
-externally hosted images.
+Simple messages can be composed of only a title and a text body. More complex
+messages can be composed of multiple sections, key/value pairs (aka, `Facts`)
+and/or externally hosted images.
 
 ## Features
 
@@ -61,10 +61,10 @@ externally hosted images.
 
 This fork is now a standalone project.
 
-This project should be considered to be in "maintenance" mode. Further
-contributions and but fixes are welcome, but the overall cadence and priority
-is likely to be lower in comparison to other projects that I maintain. I plan
-to apply bugfixes, maintain dependencies and make improvements as warranted to
+This project should be considered in "maintenance" mode. Further contributions
+and bug fixes are welcome, but the overall cadence and priority is likely to
+be lower in comparison to other projects that I maintain. That said, I plan to
+apply bugfixes, maintain dependencies and make improvements as warranted to
 meet the needs of dependent projects.
 
 With work having stalled on the upstream project, others have also taken an
@@ -83,16 +83,20 @@ find useful.
    - I promoted my PR-only fork into a standalone project.
    - The first release from this project since diverging from upstream.
 1. [v2.2.0](https://github.com/atc0005/go-teams-notify/releases/tag/v2.2.0)
-   onward
    - I merged vendored local changes from another project that I maintain,
      [atc0005/send2teams](https://github.com/atc0005/send2teams).
+
+For more recent changes, see the
+[Releases](https://github.com/atc0005/go-teams-notify/releases) section or our
+[Changelog](https://github.com/atc0005/go-teams-notify/blob/master/CHANGELOG.md).
 
 ### Future
 
 I hope to eventually collapse this project and merge all changes back into the
 upstream project. As of early 2021 however, I've still not heard back from the
 upstream project maintainer, so this does not look to be the case any time
-soon.
+soon. In the meantime, I plan to continue maintaining this fork and making
+changes as needed to support dependent projects.
 
 ## Changelog
 
