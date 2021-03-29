@@ -29,13 +29,14 @@ func TestTeamsClientSend(t *testing.T) {
 	simpleMsgCard := NewMessageCard()
 	simpleMsgCard.Text = "Hello World"
 	var tests = []struct {
-		reqURL     string
-		reqMsg     MessageCard
-		resStatus  int    // httpClient response status
-		resBody    string // httpClient response body text
-		resError   error  // httpClient error
-		error      error  // method error
-		skipURLVal bool   // whether webhook URL validation is applied (e.g., GH-68)
+		reqURL                string
+		reqMsg                MessageCard
+		resBody               string // httpClient response body text
+		resError              error  // httpClient error
+		error                 error  // method error
+		validationURLPatterns []string
+		skipURLVal            bool // whether webhook URL validation is applied (e.g., GH-68)
+		resStatus             int  // httpClient response status
 	}{
 		// invalid webhookURL - url.Parse error
 		{
@@ -54,7 +55,7 @@ func TestTeamsClientSend(t *testing.T) {
 			resStatus:  0,
 			resBody:    "invalid",
 			resError:   nil,
-			error:      ErrWebhookURLUnexpectedPrefix,
+			error:      ErrWebhookURLUnexpected,
 			skipURLVal: false,
 		},
 		// invalid httpClient.Do call
@@ -127,7 +128,7 @@ func TestTeamsClientSend(t *testing.T) {
 			resStatus:  0,
 			resBody:    "",
 			resError:   nil,
-			error:      ErrWebhookURLUnexpectedPrefix,
+			error:      ErrWebhookURLUnexpected,
 			skipURLVal: false,
 		},
 		// custom webhook domain (e.g., GH-68) with validation disabled
@@ -144,6 +145,28 @@ func TestTeamsClientSend(t *testing.T) {
 			resError:   nil,
 			error:      nil,
 			skipURLVal: true,
+		},
+		// custom webhook domain with custom validation patterns
+		{
+			reqURL:                "https://arbitrary.domain.com/webhook/xxx",
+			reqMsg:                simpleMsgCard,
+			resStatus:             200,
+			resBody:               ExpectedWebhookURLResponseText,
+			resError:              nil,
+			error:                 nil,
+			skipURLVal:            false,
+			validationURLPatterns: []string{DefaultWebhookURLValidationPattern, "arbitrary.domain.com"},
+		},
+		// custom webhook domain with custom validation patterns not matching requirements
+		{
+			reqURL:                "https://arbitrary.test.com/webhook/xxx",
+			reqMsg:                simpleMsgCard,
+			resStatus:             200,
+			resBody:               ExpectedWebhookURLResponseText,
+			resError:              nil,
+			error:                 ErrWebhookURLUnexpected,
+			skipURLVal:            false,
+			validationURLPatterns: []string{DefaultWebhookURLValidationPattern, "arbitrary.domain.com"},
 		},
 	}
 	for idx, test := range tests {
@@ -182,6 +205,7 @@ func TestTeamsClientSend(t *testing.T) {
 			}, nil
 		})
 		c := &teamsClient{httpClient: client}
+		c.AddWebhookURLValidationPatterns(test.validationURLPatterns...)
 
 		// Disable webhook URL prefix validation if specified by table test
 		// entry. See GH-68 for additional details.
