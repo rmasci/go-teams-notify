@@ -168,6 +168,17 @@ func TestTeamsClientSend(t *testing.T) {
 			skipURLVal:            false,
 			validationURLPatterns: []string{DefaultWebhookURLValidationPattern, "arbitrary.domain.com"},
 		},
+		// custom webhook domain with complex custom validation pattern matching requirements
+		{
+			reqURL:                "https://foo.domain.com/webhook/xxx",
+			reqMsg:                simpleMsgCard,
+			resStatus:             200,
+			resBody:               ExpectedWebhookURLResponseText,
+			resError:              nil,
+			error:                 nil,
+			skipURLVal:            false,
+			validationURLPatterns: []string{`^https://.*\.domain\.com/.*$`},
+		},
 	}
 	for idx, test := range tests {
 		// Create range scoped var for use within closure
