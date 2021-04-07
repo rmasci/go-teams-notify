@@ -249,6 +249,45 @@ func sendTheMessage() error {
 }
 ```
 
+### Example: Enable custom patterns' validation
+
+This example demonstrates how to enable custom validation patterns for webhook URLs.
+
+```golang
+import (
+  "github.com/atc0005/go-teams-notify/v2"
+)
+
+func main() {
+  _ = sendTheMessage()
+}
+
+func sendTheMessage() error {
+  // init the client
+  mstClient := goteamsnotify.NewClient()
+
+  // setup webhook url
+  webhookUrl := "https://my.domain.com/webhook/YOUR_WEBHOOK_URL_OF_TEAMS_CHANNEL"
+
+  // Add a custom pattern for webhook URL validation
+  mstClient.AddWebhookURLValidationPatterns(`^https://.*\.domain\.com/.*$`)
+  // It's also possible to use multiple patterns with one call
+  // mstClient.AddWebhookURLValidationPatterns(`^https://arbitrary\.example\.com/webhook/.*$`, `^https://.*\.domain\.com/.*$`)
+  // To keep the default behavior and add a custom one, use something like the following:
+  // mstClient.AddWebhookURLValidationPatterns(DefaultWebhookURLValidationPattern, `^https://.*\.domain\.com/.*$`)
+
+  // setup message card
+  msgCard := goteamsnotify.NewMessageCard()
+  msgCard.Title = "Hello world"
+  msgCard.Text = "Here are some examples of formatted stuff like "+
+      "<br> * this list itself  <br> * **bold** <br> * *italic* <br> * ***bolditalic***"
+  msgCard.ThemeColor = "#DF813D"
+
+  // send
+  return mstClient.Send(webhookUrl, msgCard)
+}
+```
+
 Of note:
 
 - webhook URL validation is **disabled**
