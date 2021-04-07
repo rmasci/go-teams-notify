@@ -29,6 +29,7 @@ A package to send messages to Microsoft Teams (channels)
     - [How to create a webhook URL (Connector)](#how-to-create-a-webhook-url-connector)
   - [Example: Basic](#example-basic)
   - [Example: Disable webhook URL prefix validation](#example-disable-webhook-url-prefix-validation)
+  - [Example: Enable custom patterns' validation](#example-enable-custom-patterns-validation)
 - [References](#references)
 
 ## Project home
@@ -249,6 +250,12 @@ func sendTheMessage() error {
 }
 ```
 
+Of note:
+
+- webhook URL validation is **disabled**
+  - allows use of custom/private webhook URL endpoints
+- other settings are the same as the basic example previously listed
+
 ### Example: Enable custom patterns' validation
 
 This example demonstrates how to enable custom validation patterns for webhook URLs.
@@ -290,7 +297,7 @@ func sendTheMessage() error {
 
 Of note:
 
-- webhook URL validation is **disabled**
+- webhook URL validation uses custom pattern
   - allows use of custom/private webhook URL endpoints
 - other settings are the same as the basic example previously listed
 
