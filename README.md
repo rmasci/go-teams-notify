@@ -19,7 +19,7 @@ A package to send messages to Microsoft Teams (channels)
 - [Features](#features)
 - [Project Status](#project-status)
   - [Now](#now)
-  - [Past](#past)
+  - [History](#history)
   - [Future](#future)
 - [Changelog](#changelog)
 - [Usage](#usage)
@@ -55,6 +55,17 @@ and/or externally hosted images.
     strings)
   - complex messages consist of one or more sections, key/value pairs (aka,
     `Facts`) and/or externally hosted images. or images (hosted externally)
+- Configurable validation of webhook URLs
+  - enabled by default, attempts to match most common known webhook URL
+    patterns
+  - option to disable validation entirely
+  - option to use custom validation patterns
+- Configurable validation of `MessageCard` type
+  - default assertion that bare-minimum required fields are present
+  - support for providing a custom validation function to override default
+    validation behavior
+- Configurable timeouts
+- Configurable retry support
 - Submit messages to Microsoft Teams
 
 ## Project Status
@@ -75,7 +86,7 @@ forks](https://github.com/atc0005/go-teams-notify/network/members) of the
 parent project codebase. See those forks for other ideas/changes that you may
 find useful.
 
-### Past
+### History
 
 1. Initial release up to and including `v2.1.0`
    - The last [upstream project
