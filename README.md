@@ -30,6 +30,7 @@ A package to send messages to Microsoft Teams (channels)
   - [Example: Basic](#example-basic)
   - [Example: Disable webhook URL prefix validation](#example-disable-webhook-url-prefix-validation)
   - [Example: Enable custom patterns' validation](#example-enable-custom-patterns-validation)
+- [Used by](#used-by)
 - [References](#references)
 
 ## Project home
@@ -301,6 +302,27 @@ Of note:
   - allows use of custom/private webhook URL endpoints
 - other settings are the same as the basic example previously listed
 
+## Used by
+
+This library is used by the following projects.
+
+- <https://github.com/tilmorproducts/gohelpers>
+- <https://github.com/nikoksr/notify/service/msteams>
+- <https://github.com/tomekwlod/go-teams>
+- <https://github.com/atc0005/bounce>
+- <https://github.com/atc0005/brick>
+- <https://github.com/atc0005/send2teams>
+
+See the Known importers lists below for a dynamically updated list of projects
+using either this library or the original project.
+
+- original project
+  - [v1](https://pkg.go.dev/github.com/dasrick/go-teams-notify?tab=importedby)
+  - [v2](https://pkg.go.dev/github.com/dasrick/go-teams-notify/v2?tab=importedby)
+- this fork
+  - [v1](https://pkg.go.dev/github.com/atc0005/go-teams-notify?tab=importedby)
+  - [v2](https://pkg.go.dev/github.com/atc0005/go-teams-notify/v2?tab=importedby)
+
 ## References
 
 - [Original project](https://github.com/dasrick/go-teams-notify)
@@ -314,11 +336,6 @@ Of note:
   ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/send-via-connectors),
   [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors))
   - [adaptivecards.io](https://adaptivecards.io/designer)
-
-- Related projects
-  - <https://github.com/atc0005/send2teams>
-  - <https://github.com/atc0005/bounce>
-  - <https://github.com/atc0005/brick>
 
 [githubtag-image]: https://img.shields.io/github/release/atc0005/go-teams-notify.svg?style=flat
 [githubtag-url]: https://github.com/atc0005/go-teams-notify
