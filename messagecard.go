@@ -337,6 +337,10 @@ type MessageCardSection struct {
 	// https://stackoverflow.com/questions/33447334/golang-json-marshal-how-to-omit-empty-nested-struct
 	Images []*MessageCardSectionImage `json:"images,omitempty"`
 
+	// PotentialActions is a collection of actions for a MessageCardSection.
+	// This is separate from the actions collection for the MessageCard.
+	PotentialActions []*MessageCardPotentialAction `json:"potentialAction,omitempty"`
+
 	// Markdown represents a toggle to enable or disable Markdown formatting.
 	// By default, all text fields in a card and its sections can be formatted
 	// using basic Markdown.
@@ -387,6 +391,7 @@ type MessageCard struct {
 	// Sections is a collection of sections to include in the card.
 	Sections []*MessageCardSection `json:"sections,omitempty"`
 
+	// PotentialActions is a collection of actions for a MessageCard.
 	PotentialActions []*MessageCardPotentialAction `json:"potentialAction,omitempty"`
 }
 
@@ -528,6 +533,34 @@ func (mcs *MessageCardSection) AddFactFromKeyValue(key string, values ...string)
 	mcs.Facts = append(mcs.Facts, fact)
 
 	// if we made it this far then all should be well
+	return nil
+}
+
+// AddPotentialAction adds one or many MessageCardPotentialAction values to a
+// PotentialActions collection on a MessageCardSection. This is separate from
+// the actions collection for the MessageCard.
+func (mcs *MessageCardSection) AddPotentialAction(actions ...*MessageCardPotentialAction) error {
+	for _, a := range actions {
+		logger.Printf("AddPotentialAction: MessageCardPotentialAction received: %+v\n", a)
+
+		if a == nil {
+			return fmt.Errorf("func AddPotentialAction: nil MessageCardPotentialAction received")
+		}
+
+		switch a.Type {
+		case PotentialActionOpenURIType,
+			PotentialActionHTTPPostType,
+			PotentialActionActionCardType,
+			PotentialActionInvokeAddInCommandType:
+
+		default:
+			logger.Printf("AddPotentialAction: unknown type %s for action %s\n", a.Type, a.Name)
+			return fmt.Errorf("unknown type %s for potential action %s", a.Type, a.Name)
+		}
+
+		mcs.PotentialActions = append(mcs.PotentialActions, a)
+	}
+
 	return nil
 }
 
