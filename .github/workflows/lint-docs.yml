@@ -23,10 +23,11 @@ jobs:
 
     steps:
       - name: Setup Node
-        # https://github.com/actions/setup-node
+        # https://github.com/actions/setup-node#supported-version-syntax
+        # https://github.com/nvm-sh/nvm#long-term-support
         uses: actions/setup-node@v2.2.0
         with:
-          node-version: "10.x"
+          node-version: "lts/*"
 
       - name: Install Markdown linting tools
         run: |
