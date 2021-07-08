@@ -28,6 +28,7 @@ A package to send messages to Microsoft Teams (channels)
     - [Expected format](#expected-format)
     - [How to create a webhook URL (Connector)](#how-to-create-a-webhook-url-connector)
   - [Example: Basic](#example-basic)
+  - [Example: Add an Action](#example-add-an-action)
   - [Example: Disable webhook URL prefix validation](#example-disable-webhook-url-prefix-validation)
   - [Example: Enable custom patterns' validation](#example-enable-custom-patterns-validation)
 - [Used by](#used-by)
@@ -46,7 +47,8 @@ complex messages to a Microsoft Teams channel.
 
 Simple messages can be composed of only a title and a text body. More complex
 messages can be composed of multiple sections, key/value pairs (aka, `Facts`)
-and/or externally hosted images.
+and/or externally hosted images. See the [Features](#features) list for more
+information.
 
 ## Features
 
@@ -55,6 +57,8 @@ and/or externally hosted images.
     strings)
   - complex messages consist of one or more sections, key/value pairs (aka,
     `Facts`) and/or externally hosted images. or images (hosted externally)
+- Support for [`Actions`][msgcard-ref-actions], allowing users to take quick
+  actions within Microsoft Teams
 - Configurable validation of webhook URLs
   - enabled by default, attempts to match most common known webhook URL
     patterns
@@ -225,6 +229,79 @@ Of note:
 - simple message submitted to Microsoft Teams consisting of formatted body and
   title
 
+### Example: Add an Action
+
+This example illustrates adding an [`OpenUri Action`][msgcard-ref-actions] to
+a message card. When used, this action triggers opening a URI in a separate
+browser or application.
+
+```golang
+package main
+
+import (
+  "log"
+
+  "github.com/atc0005/go-teams-notify/v2"
+)
+
+func main() {
+  _ = sendTheMessage()
+}
+
+func sendTheMessage() error {
+  // init the client
+  mstClient := goteamsnotify.NewClient()
+
+  // setup webhook url
+  webhookUrl := "https://outlook.office.com/webhook/YOUR_WEBHOOK_URL_OF_TEAMS_CHANNEL"
+
+  // destination for OpenUri action
+  targetURL := "https://github.com/atc0005/go-teams-notify"
+  targetURLDesc := "Project Homepage"
+
+  // setup message card
+  msgCard := goteamsnotify.NewMessageCard()
+  msgCard.Title = "Hello world"
+  msgCard.Text = "Here are some examples of formatted stuff like "+
+      "<br> * this list itself  <br> * **bold** <br> * *italic* <br> * ***bolditalic***"
+  msgCard.ThemeColor = "#DF813D"
+
+  // setup Action for message card
+  pa, err := goteamsnotify.NewMessageCardPotentialAction(
+    goteamsnotify.PotentialActionOpenURIType,
+    targetURLDesc,
+  )
+
+  if err != nil {
+    log.Fatal("error encountered when creating new action:", err)
+  }
+
+  pa.MessageCardPotentialActionOpenURI.Targets =
+    []goteamsnotify.MessageCardPotentialActionOpenURITarget{
+      {
+        OS:  "default",
+        URI: targetURL,
+      },
+    }
+
+  // add the Action to the message card
+  if err := msgCard.AddPotentialAction(pa); err != nil {
+    log.Fatal("error encountered when adding action to message card:", err)
+  }
+
+  // send
+  return mstClient.Send(webhookUrl, msgCard)
+}
+```
+
+Of note:
+
+- default timeout
+- package-level logging is disabled by default
+- validation of known webhook URL prefixes is *enabled*
+- message submitted to Microsoft Teams consisting of formatted body, title and
+  one [`OpenUri Action`][msgcard-ref-actions]
+
 ### Example: Disable webhook URL prefix validation
 
 This example disables the validation webhook URLs, including the validation of
@@ -356,3 +433,5 @@ using either this library or the original project.
 
 [license-image]: https://img.shields.io/github/license/atc0005/go-teams-notify.svg?style=flat
 [license-url]: https://github.com/atc0005/go-teams-notify/blob/master/LICENSE
+
+[msgcard-ref-actions]: <https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#actions>
