@@ -23,7 +23,7 @@ Send messages to a Microsoft Teams channel.
 
 FEATURES
 
-• Generate messages with one or more sections, Facts (key/value pairs) or images (hosted externally)
+• Generate messages with one or more sections, Facts (key/value pairs), Actions or images (hosted externally)
 
 • Submit messages to Microsoft Teams
 
@@ -55,6 +55,8 @@ EXAMPLE
 		// send
 		return mstClient.Send(webhookUrl, msgCard)
 	}
+
+See our main README for other supported settings and additional examples.
 
 */
 package goteamsnotify
