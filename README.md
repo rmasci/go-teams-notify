@@ -18,19 +18,18 @@ A package to send messages to Microsoft Teams (channels)
 - [Overview](#overview)
 - [Features](#features)
 - [Project Status](#project-status)
-  - [Now](#now)
-  - [History](#history)
-  - [Future](#future)
+- [Supported Releases](#supported-releases)
 - [Changelog](#changelog)
 - [Usage](#usage)
   - [Add this project as a dependency](#add-this-project-as-a-dependency)
   - [Webhook URLs](#webhook-urls)
     - [Expected format](#expected-format)
     - [How to create a webhook URL (Connector)](#how-to-create-a-webhook-url-connector)
-  - [Example: Basic](#example-basic)
-  - [Example: Add an Action](#example-add-an-action)
-  - [Example: Disable webhook URL prefix validation](#example-disable-webhook-url-prefix-validation)
-  - [Example: Enable custom patterns' validation](#example-enable-custom-patterns-validation)
+  - [Examples](#examples)
+    - [Basic](#basic)
+    - [Add an Action](#add-an-action)
+    - [Disable webhook URL prefix validation](#disable-webhook-url-prefix-validation)
+    - [Enable custom patterns' validation](#enable-custom-patterns-validation)
 - [Used by](#used-by)
 - [References](#references)
 
@@ -42,8 +41,8 @@ inclusion into the project.
 
 ## Overview
 
-The `goteamsnotify` package (aka, `go-teams-notify`) allows sending simple or
-complex messages to a Microsoft Teams channel.
+The `goteamsnotify` package (aka, `go-teams-notify`) allows sending messages
+to a Microsoft Teams channel.
 
 Simple messages can be composed of only a title and a text body. More complex
 messages can be composed of multiple sections, key/value pairs (aka, `Facts`)
@@ -52,7 +51,7 @@ information.
 
 ## Features
 
-- Generate simple or complex messages
+- Submit simple or complex messages to Microsoft Teams
   - simple messages consist of only a title and a text body (one or more
     strings)
   - complex messages consist of one or more sections, key/value pairs (aka,
@@ -70,50 +69,29 @@ information.
     validation behavior
 - Configurable timeouts
 - Configurable retry support
-- Submit messages to Microsoft Teams
 
 ## Project Status
 
-### Now
+In short:
 
-This fork is now a standalone project.
+- The upstream project is no longer being actively developed or maintained.
+- This fork is now a standalone project, accepting contributions, bug reports
+  and feature requests.
+- Others have also taken an interest in [maintaining their own
+  forks](https://github.com/atc0005/go-teams-notify/network/members) of the
+  original project. See those forks for other ideas/changes that you may find
+  useful.
 
-This project should be considered in "maintenance" mode. Further contributions
-and bug fixes are welcome, but the overall cadence and priority is likely to
-be lower in comparison to other projects that I maintain. That said, I plan to
-apply bugfixes, maintain dependencies and make improvements as warranted to
-meet the needs of dependent projects.
-
-With work having stalled on the upstream project, others have also taken an
-interest in [maintaining their own
-forks](https://github.com/atc0005/go-teams-notify/network/members) of the
-parent project codebase. See those forks for other ideas/changes that you may
-find useful.
-
-### History
-
-1. Initial release up to and including `v2.1.0`
-   - The last [upstream project
-     release](https://github.com/dasrick/go-teams-notify/releases).
-1. [v2.1.1](https://github.com/atc0005/go-teams-notify/releases/tag/v2.1.1)
-   - Further attempts to reach the upstream project maintainer failed.
-   - I promoted my PR-only fork into a standalone project.
-   - The first release from this project since diverging from upstream.
-1. [v2.2.0](https://github.com/atc0005/go-teams-notify/releases/tag/v2.2.0)
-   - I merged vendored local changes from another project that I maintain,
-     [atc0005/send2teams](https://github.com/atc0005/send2teams).
-
-For more recent changes, see the
+For more details, see the
 [Releases](https://github.com/atc0005/go-teams-notify/releases) section or our
 [Changelog](https://github.com/atc0005/go-teams-notify/blob/master/CHANGELOG.md).
 
-### Future
+## Supported Releases
 
-I hope to eventually collapse this project and merge all changes back into the
-upstream project. As of early 2021 however, I've still not heard back from the
-upstream project maintainer, so this does not look to be the case any time
-soon. In the meantime, I plan to continue maintaining this fork and making
-changes as needed to support dependent projects.
+| Series   | Example  | Status              |
+| -------- | -------- | ------------------- |
+| `v1.x.x` | `v1.3.1` | Not Supported (EOL) |
+| `v2.x.x` | `v2.6.0` | Supported           |
 
 ## Changelog
 
@@ -132,13 +110,22 @@ Modules](https://blog.golang.org/using-go-modules), add this line to your
 imports like so:
 
 ```golang
-import "github.com/atc0005/go-teams-notify/v2"
+import (
+  // ...
+
+  "github.com/atc0005/go-teams-notify/v2"
+)
 ```
 
-Your editor will likely resolve the import and update your `go.mod` and
-`go.sum` files accordingly. If not, read the official [Go
-Modules](https://blog.golang.org/using-go-modules) blog post on the topic for
-further information.
+Depending on your editor and current settings, your editor may resolve the
+import and update your `go.mod` and `go.sum` files accordingly. If not, review
+these resources for further information:
+
+- <https://blog.golang.org/using-go-modules>
+- <https://golang.org/doc/modules/managing-dependencies>
+- <https://golang.org/ref/mod>
+
+See the [Examples](#examples) section for more details.
 
 ### Webhook URLs
 
@@ -189,13 +176,15 @@ Credit:
 [gist comment from
 shadabacc3934](https://gist.github.com/chusiang/895f6406fbf9285c58ad0a3ace13d025#gistcomment-3562501)
 
-### Example: Basic
+### Examples
+
+#### Basic
 
 This is an example of a simple client application which uses this library.
 
 File: [basic](./examples/basic/main.go)
 
-### Example: Add an Action
+#### Add an Action
 
 This example illustrates adding an [`OpenUri Action`][msgcard-ref-actions] to
 a message card. When used, this action triggers opening a URI in a separate
@@ -203,7 +192,7 @@ browser or application.
 
 File: [actions](./examples/actions/main.go)
 
-### Example: Disable webhook URL prefix validation
+#### Disable webhook URL prefix validation
 
 This example disables the validation webhook URLs, including the validation of
 known prefixes so that custom/private webhook URL endpoints can be used (e.g.,
@@ -211,7 +200,7 @@ testing purposes).
 
 File: [disable-validation](./examples/disable-validation/main.go)
 
-### Example: Enable custom patterns' validation
+#### Enable custom patterns' validation
 
 This example demonstrates how to enable custom validation patterns for webhook
 URLs.
@@ -220,24 +209,11 @@ File: [custom-validation](./examples/custom-validation/main.go)
 
 ## Used by
 
-This library is used by the following projects.
-
-- <https://github.com/tilmorproducts/gohelpers>
-- <https://github.com/nikoksr/notify/service/msteams>
-- <https://github.com/tomekwlod/go-teams>
-- <https://github.com/atc0005/bounce>
-- <https://github.com/atc0005/brick>
-- <https://github.com/atc0005/send2teams>
-
 See the Known importers lists below for a dynamically updated list of projects
 using either this library or the original project.
 
-- original project
-  - [v1](https://pkg.go.dev/github.com/dasrick/go-teams-notify?tab=importedby)
-  - [v2](https://pkg.go.dev/github.com/dasrick/go-teams-notify/v2?tab=importedby)
-- this fork
-  - [v1](https://pkg.go.dev/github.com/atc0005/go-teams-notify?tab=importedby)
-  - [v2](https://pkg.go.dev/github.com/atc0005/go-teams-notify/v2?tab=importedby)
+- [this fork](https://pkg.go.dev/github.com/atc0005/go-teams-notify/v2?tab=importedby)
+- [original project](https://pkg.go.dev/github.com/dasrick/go-teams-notify/v2?tab=importedby)
 
 ## References
 
@@ -252,6 +228,7 @@ using either this library or the original project.
   ([de-de](https://docs.microsoft.com/de-de/outlook/actionable-messages/send-via-connectors),
   [en-us](https://docs.microsoft.com/en-us/outlook/actionable-messages/send-via-connectors))
   - [adaptivecards.io](https://adaptivecards.io/designer)
+  - [Legacy actionable message card reference][msgcard-ref]
 
 [githubtag-image]: https://img.shields.io/github/release/atc0005/go-teams-notify.svg?style=flat
 [githubtag-url]: https://github.com/atc0005/go-teams-notify
@@ -262,4 +239,5 @@ using either this library or the original project.
 [license-image]: https://img.shields.io/github/license/atc0005/go-teams-notify.svg?style=flat
 [license-url]: https://github.com/atc0005/go-teams-notify/blob/master/LICENSE
 
+[msgcard-ref]: <https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference>
 [msgcard-ref-actions]: <https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#actions>
