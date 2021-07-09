@@ -7,9 +7,8 @@
 
 /*
 
-This example illustrates adding an [`OpenUri Action`][msgcard-ref-actions] to
-a message card. When used, this action triggers opening a URI in a separate
-browser or application.
+This example illustrates adding an OpenUri Action to a message card. When
+used, this action triggers opening a URI in a separate browser or application.
 
 
 Of note:
@@ -18,7 +17,11 @@ Of note:
 - package-level logging is disabled by default
 - validation of known webhook URL prefixes is *enabled*
 - message submitted to Microsoft Teams consisting of formatted body, title and
-  one [`OpenUri Action`][msgcard-ref-actions]
+  one OpenUri Action
+
+See also:
+
+- https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#actions
 
 */
 
