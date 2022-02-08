@@ -35,6 +35,8 @@ FEATURES
 
 • Support for overriding the default http.Client
 
+• Support for overriding the default project-specific user agent
+
 
 USAGE
 
