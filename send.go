@@ -303,7 +303,9 @@ func (c teamsClient) SendWithRetry(ctx context.Context, webhookURL string, webho
 			logger.Println(errMsg)
 			return errMsg
 
-		case result != nil:
+		// Last send attempt failed. Context hasn't expired yet and at least
+		// one retry attempt remains.
+		default:
 
 			ourRetryDelay := time.Duration(retriesDelay) * time.Second
 
