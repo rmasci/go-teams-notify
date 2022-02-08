@@ -69,6 +69,7 @@ information.
     validation behavior
 - Configurable timeouts
 - Configurable retry support
+- Support for overriding the default `http.Client`
 
 ## Project Status
 

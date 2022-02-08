@@ -89,6 +89,7 @@ type API interface {
 	Send(webhookURL string, webhookMessage MessageCard) error
 	SendWithContext(ctx context.Context, webhookURL string, webhookMessage MessageCard) error
 	SendWithRetry(ctx context.Context, webhookURL string, webhookMessage MessageCard, retries int, retriesDelay int) error
+	SetHTTPClient(httpClient *http.Client) API
 	SkipWebhookURLValidationOnSend(skip bool) API
 	AddWebhookURLValidationPatterns(patterns ...string) API
 	ValidateWebhook(webhookURL string) error
@@ -131,6 +132,14 @@ func NewClient() API {
 		skipWebhookURLValidation: false,
 	}
 	return &client
+}
+
+// SetHTTPClient accepts a custom http.Client value which replaces the
+// existing default http.Client.
+func (c *teamsClient) SetHTTPClient(httpClient *http.Client) API {
+	c.httpClient = httpClient
+
+	return c
 }
 
 func (c *teamsClient) AddWebhookURLValidationPatterns(patterns ...string) API {

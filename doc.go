@@ -33,6 +33,8 @@ FEATURES
 
 • Configurable retry support
 
+• Support for overriding the default http.Client
+
 
 USAGE
 
