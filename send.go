@@ -160,6 +160,8 @@ func (c *teamsClient) SetUserAgent(userAgent string) API {
 	return c
 }
 
+// AddWebhookURLValidationPatterns collects given patterns for validation of
+// the webhook URL.
 func (c *teamsClient) AddWebhookURLValidationPatterns(patterns ...string) API {
 	c.webhookURLValidationPatterns = append(c.webhookURLValidationPatterns, patterns...)
 	return c
@@ -374,6 +376,7 @@ func (c teamsClient) validateInput(webhookMessage MessageCard, webhookURL string
 	return webhookMessage.Validate()
 }
 
+// ValidateWebhook applies webhook URL validation unless explicitly disabled.
 func (c teamsClient) ValidateWebhook(webhookURL string) error {
 	if c.skipWebhookURLValidation || webhookURL == DisableWebhookURLValidation {
 		return nil
