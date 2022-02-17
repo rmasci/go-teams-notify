@@ -12,6 +12,7 @@ This is an example of a simple client application which uses this library.
 Of note:
 
 - default timeout
+- custom user agent
 - package-level logging is disabled by default
 - validation of known webhook URL prefixes is *enabled*
 - simple message submitted to Microsoft Teams consisting of formatted body and
@@ -31,8 +32,12 @@ func main() {
 }
 
 func sendTheMessage() error {
-	// init the client
+
+	// Initialize a new Microsoft Teams client.
 	mstClient := goteamsnotify.NewTeamsClient()
+
+	// override the project-specific default user agent
+	mstClient.SetUserAgent("go-teams-notify-example/1.0")
 
 	// setup webhook url
 	webhookUrl := "https://outlook.office.com/webhook/YOUR_WEBHOOK_URL_OF_TEAMS_CHANNEL"

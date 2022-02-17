@@ -1,7 +1,7 @@
 <!-- omit in toc -->
 # go-teams-notify
 
-A package to send messages to Microsoft Teams (channels)
+A package to send messages to a Microsoft Teams channel.
 
 [![Latest release][githubtag-image]][githubtag-url]
 [![Go Reference][goref-image]][goref-url]
@@ -27,6 +27,8 @@ A package to send messages to Microsoft Teams (channels)
     - [How to create a webhook URL (Connector)](#how-to-create-a-webhook-url-connector)
   - [Examples](#examples)
     - [Basic](#basic)
+    - [User Mention](#user-mention)
+    - [Set custom user agent](#set-custom-user-agent)
     - [Add an Action](#add-an-action)
     - [Disable webhook URL prefix validation](#disable-webhook-url-prefix-validation)
     - [Enable custom patterns' validation](#enable-custom-patterns-validation)
@@ -58,6 +60,7 @@ information.
     `Facts`) and/or externally hosted images. or images (hosted externally)
 - Support for [`Actions`][msgcard-ref-actions], allowing users to take quick
   actions within Microsoft Teams
+- Support for [user mentions][botapi-user-mentions] (limited)
 - Configurable validation of webhook URLs
   - enabled by default, attempts to match most common known webhook URL
     patterns
@@ -184,6 +187,18 @@ This is an example of a simple client application which uses this library.
 
 File: [basic](./examples/basic/main.go)
 
+#### User Mention
+
+This example illustrates the use of a user mention.
+
+File: [basic](./examples/user-mention/main.go)
+
+#### Set custom user agent
+
+This example illustrates setting a custom user agent.
+
+File: [custom-user-agent](./examples/custom-user-agent/main.go)
+
 #### Add an Action
 
 This example illustrates adding an [`OpenUri Action`][msgcard-ref-actions] to
@@ -241,3 +256,5 @@ using either this library or the original project.
 
 [msgcard-ref]: <https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference>
 [msgcard-ref-actions]: <https://docs.microsoft.com/en-us/outlook/actionable-messages/message-card-reference#actions>
+
+[botapi-user-mentions]: <https://docs.microsoft.com/en-us/microsoftteams/platform/bots/how-to/conversations/channel-and-group-conversations?tabs=json#work-with-mentions>
