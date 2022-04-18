@@ -142,7 +142,7 @@ type teamsMessage interface {
 // teamsClient is the legacy client used for submitting messages to a
 // Microsoft Teams channel.
 type teamsClient struct {
-	httpClient                   *http.Client
+	HttpClient                   *http.Client
 	userAgent                    string
 	webhookURLValidationPatterns []string
 	skipWebhookURLValidation     bool
@@ -151,7 +151,7 @@ type teamsClient struct {
 // TeamsClient provides functionality for submitting messages to a Microsoft
 // Teams channel.
 type TeamsClient struct {
-	httpClient                   *http.Client
+	HttpClient                   *http.Client
 	userAgent                    string
 	webhookURLValidationPatterns []string
 	skipWebhookURLValidation     bool
@@ -182,27 +182,27 @@ func DisableLogging() {
 //
 // Deprecated: use NewTeamsClient() function instead.
 func NewClient() API {
-	client := teamsClient{
-		httpClient: &http.Client{
+	Client := teamsClient{
+		HttpClient: &http.Client{
 			// We're using a context instead of setting this directly
 			// Timeout: DefaultWebhookSendTimeout,
 		},
 		skipWebhookURLValidation: false,
 	}
-	return &client
+	return &Client
 }
 
 // NewTeamsClient constructs a minimal client for submitting messages to a
 // Microsoft Teams channel.
 func NewTeamsClient() *TeamsClient {
-	client := TeamsClient{
-		httpClient: &http.Client{
+	Client := TeamsClient{
+		HttpClient: &http.Client{
 			// We're using a context instead of setting this directly
 			// Timeout: DefaultWebhookSendTimeout,
 		},
 		skipWebhookURLValidation: false,
 	}
-	return &client
+	return &Client
 }
 
 // private prevents client code from implementing the MessageSender interface
@@ -216,7 +216,7 @@ func (c *TeamsClient) private() {}
 // SetHTTPClient accepts a custom http.Client value which replaces the
 // existing default http.Client.
 func (c *TeamsClient) SetHTTPClient(httpClient *http.Client) *TeamsClient {
-	c.httpClient = httpClient
+	c.HttpClient = httpClient
 
 	return c
 }
@@ -274,13 +274,13 @@ func (c *TeamsClient) AddWebhookURLValidationPatterns(patterns ...string) *Teams
 //
 // Deprecated: use TeamsClient.HTTPClient() method instead.
 func (c *teamsClient) HTTPClient() *http.Client {
-	return c.httpClient
+	return c.HttpClient
 }
 
 // HTTPClient returns the internal pointer to an http.Client. This can be used
 // to further modify specific http.Client field values.
 func (c *TeamsClient) HTTPClient() *http.Client {
-	return c.httpClient
+	return c.HttpClient
 }
 
 // Send is a wrapper function around the SendWithContext method in order to

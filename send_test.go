@@ -31,12 +31,12 @@ func TestTeamsClientSend(t *testing.T) {
 	var tests = []struct {
 		reqURL                string
 		reqMsg                MessageCard
-		resBody               string // httpClient response body text
-		resError              error  // httpClient error
+		resBody               string // HttpClient response body text
+		resError              error  // HttpClient error
 		error                 error  // method error
 		validationURLPatterns []string
 		skipURLVal            bool // whether webhook URL validation is applied (e.g., GH-68)
-		resStatus             int  // httpClient response status
+		resStatus             int  // HttpClient response status
 	}{
 		// invalid webhookURL - url.Parse error
 		{
@@ -58,7 +58,7 @@ func TestTeamsClientSend(t *testing.T) {
 			error:      ErrWebhookURLUnexpected,
 			skipURLVal: false,
 		},
-		// invalid httpClient.Do call
+		// invalid HttpClient.Do call
 		{
 			reqURL:     "https://outlook.office.com/webhook/xxx",
 			reqMsg:     simpleMsgCard,
@@ -68,7 +68,7 @@ func TestTeamsClientSend(t *testing.T) {
 			error:      &url.Error{},
 			skipURLVal: false,
 		},
-		// invalid httpClient.Do call
+		// invalid HttpClient.Do call
 		{
 			reqURL:     "https://outlook.office365.com/webhook/xxx",
 			reqMsg:     simpleMsgCard,
@@ -215,7 +215,7 @@ func TestTeamsClientSend(t *testing.T) {
 				Header: make(http.Header),
 			}, nil
 		})
-		c := &teamsClient{httpClient: client}
+		c := &teamsClient{HttpClient: client}
 		c.AddWebhookURLValidationPatterns(test.validationURLPatterns...)
 
 		// Disable webhook URL prefix validation if specified by table test
